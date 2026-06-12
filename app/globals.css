@@ -1,26 +1,82 @@
 @import "tailwindcss";
+@import "./styles/tokens.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* Design-System-Tokens auch als Tailwind-Theme verfügbar machen
+   (z.B. bg-primary, text-accent, font-display) */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-energy: var(--energy);
+  --color-surface: var(--surface);
+  --color-muted: var(--text-muted);
+  --font-display: var(--text-display);
+  --font-body: var(--text-body);
+  --font-mono: var(--text-code);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ---- Base element defaults (aus dem Design System) ---- */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: var(--text-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--text-heading);
+  font-weight: var(--fw-extra);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-tight);
+  color: var(--text);
+  margin: 0;
+}
+
+a { color: var(--text-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+::selection { background: color-mix(in srgb, var(--accent) 30%, transparent); }
+
+/* Eyebrow / Overline */
+.sm-eyebrow {
+  font-family: var(--text-heading);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---- Responsive Layout-Helfer (mobile-first) ----
+   Das Marketing-Kit referenziert diese Klassen; das index.html des
+   Prototyps fehlte im Handoff, daher hier mobile-first definiert. */
+.sm-hero-grid { grid-template-columns: 1fr !important; }
+.sm-3col { grid-template-columns: 1fr !important; }
+.sm-4col { grid-template-columns: repeat(2, 1fr) !important; }
+.sm-foot { grid-template-columns: 1fr 1fr !important; }
+.sm-navlinks { display: none !important; }
+.sm-hide-sm { display: none !important; }
+
+@media (min-width: 640px) {
+  .sm-hide-sm { display: inline-flex !important; }
+}
+
+@media (min-width: 768px) {
+  .sm-3col { grid-template-columns: repeat(3, 1fr) !important; }
+  .sm-4col { grid-template-columns: repeat(4, 1fr) !important; }
+  .sm-foot { grid-template-columns: 1.4fr 1fr 1fr 1fr !important; }
+}
+
+@media (min-width: 900px) {
+  .sm-hero-grid { grid-template-columns: 1.05fr 0.95fr !important; }
+  .sm-navlinks { display: flex !important; }
+}
+
+/* ---- Theme-abhängige Sichtbarkeit (Logo & Theme-Toggle-Icon) ----
+   Rein per CSS, damit Server-HTML und Client identisch bleiben. */
+.sm-dark-only { display: none !important; }
+:root[data-theme="dark"] .sm-dark-only { display: inline-flex !important; }
+:root[data-theme="dark"] .sm-light-only { display: none !important; }

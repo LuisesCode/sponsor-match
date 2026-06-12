@@ -1,0 +1,7 @@
+<svg width="240" height="48" viewBox="0 0 240 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SponsorMatch">
+  <rect width="48" height="48" rx="12" fill="#1B3A6B"></rect>
+  <path d="M11 16.5 L21.5 24 L11 31.5 Z" fill="#FFFFFF"></path>
+  <path d="M37 16.5 L26.5 24 L37 31.5 Z" fill="#16B486"></path>
+  <circle cx="24" cy="24" r="2.4" fill="#FF6B35"></circle>
+  <text x="62" y="32" font-family="Archivo, system-ui, sans-serif" font-weight="800" font-size="24" letter-spacing="-0.5" fill="currentColor">Sponsor<tspan fill="#16B486">Match</tspan></text>
+</svg>

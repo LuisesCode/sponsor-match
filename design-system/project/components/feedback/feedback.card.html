@@ -1,0 +1,66 @@
+<!-- @dsCard group="Components" viewport="700x520" name="Feedback & Trust" subtitle="Badge, VerifiedBadge, RatingStars, Toast, Tooltip, Dialog" -->
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin:0; padding:24px; background:var(--bg); font-family:var(--font-body); }
+  .grid { display:flex; flex-direction:column; gap:22px; }
+  .h { font-family:var(--font-display); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px; }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+</style></head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Badge, VerifiedBadge, RatingStars, Toast, Tooltip, Dialog, Button } = window.SponsorMatchDesignSystem_a1f0e8;
+function Demo() {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <div className="grid">
+      <div>
+        <div className="h">Badges</div>
+        <div className="row">
+          <Badge tone="success" dot>Aktiv</Badge>
+          <Badge tone="accent">Fußball</Badge>
+          <Badge tone="primary">E-Sport</Badge>
+          <Badge tone="warning">Ausstehend</Badge>
+          <Badge tone="danger">Abgelehnt</Badge>
+          <Badge tone="info">Neu</Badge>
+          <Badge tone="solid">12</Badge>
+        </div>
+      </div>
+      <div>
+        <div className="h">Vertrauenssignale</div>
+        <div className="row">
+          <VerifiedBadge type="verified" />
+          <VerifiedBadge type="secure" />
+          <VerifiedBadge type="pro" />
+          <Tooltip content="Identität & Reichweite geprüft"><VerifiedBadge type="verified" showLabel={false} /></Tooltip>
+          <RatingStars value={4.9} count={128} showValue />
+          <RatingStars value={3.5} size={16} />
+        </div>
+      </div>
+      <div>
+        <div className="h">Toasts</div>
+        <div className="row" style={{alignItems:'flex-start'}}>
+          <Toast tone="success" title="Deal bestätigt" description="Die Zahlung liegt sicher im Escrow." onClose={()=>{}} />
+          <Toast tone="warning" title="Vertrag läuft ab" description="Noch 3 Tage zum Gegenzeichnen." onClose={()=>{}} />
+        </div>
+      </div>
+      <div>
+        <div className="h">Dialog</div>
+        <Button variant="accent" onClick={()=>setOpen(true)}>Deal annehmen</Button>
+        <Dialog open={open} title="Deal annehmen?" description="Der Betrag wird im Escrow reserviert, bis beide Seiten bestätigen." onClose={()=>setOpen(false)}
+          footer={<><Button variant="ghost" onClick={()=>setOpen(false)}>Abbrechen</Button><Button variant="accent" onClick={()=>setOpen(false)}>Annehmen</Button></>}>
+          <p style={{margin:0}}>Vertragswert: <strong>€4.250</strong> · Laufzeit 3 Monate.</p>
+        </Dialog>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body></html>

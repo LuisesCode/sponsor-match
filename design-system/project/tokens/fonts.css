@@ -1,0 +1,11 @@
+/* SponsorMatch — Webfonts (Google Fonts CDN)
+   Display: Archivo  — markant, sportlich, vertrauenswürdig (variable weight + width)
+   Body:    Manrope  — neutral, freundlich, hoch lesbar
+   Mono:    JetBrains Mono — Kennzahlen, Beträge, Codes */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --font-display: 'Archivo', 'Archivo Expanded', system-ui, sans-serif;
+  --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}

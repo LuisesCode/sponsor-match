@@ -1,0 +1,68 @@
+<!-- @dsCard group="Components" viewport="700x640" name="Daten & Marktplatz" subtitle="Card, Avatar, Tag, Tabs, StatBlock, MatchCard" -->
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin:0; padding:24px; background:var(--bg); font-family:var(--font-body); }
+  .grid { display:flex; flex-direction:column; gap:24px; }
+  .h { font-family:var(--font-display); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px; }
+  .row { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+  .two { display:grid; grid-template-columns:360px 1fr; gap:20px; align-items:start; }
+</style></head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Card, Avatar, Tag, Tabs, StatBlock, MatchCard, Icon } = window.SponsorMatchDesignSystem_a1f0e8;
+function Demo() {
+  return (
+    <div className="grid">
+      <div>
+        <div className="h">Avatars · Tags · Tabs</div>
+        <div className="row">
+          <Avatar name="Lena Fuchs" size="lg" verified />
+          <Avatar name="FC Adler" shape="square" size="lg" />
+          <Avatar name="Max Berg" status="online" size="lg" />
+          <Tag selected>Fitness</Tag>
+          <Tag onClick={()=>{}}>E-Sport</Tag>
+          <Tag onRemove={()=>{}}>Instagram</Tag>
+        </div>
+        <div className="row" style={{marginTop:14}}>
+          <Tabs tabs={['Übersicht','Mediakit','Bewertungen']} defaultValue="Übersicht" />
+          <Tabs variant="pill" tabs={[{value:'all',label:'Alle',count:24},{value:'fav',label:'Favoriten',count:6}]} defaultValue="all" />
+        </div>
+      </div>
+
+      <div className="two">
+        <div>
+          <div className="h">MatchCard</div>
+          <MatchCard name="Lena Fuchs" category="Fitness" location="München" verified
+            matchScore={94} rating={4.9} ratingCount={128} priceFrom="€1.200"
+            stats={[{value:'128K',label:'Reichweite'},{value:'7,2%',label:'Engagement'},{value:'12',label:'Deals'}]}
+            tags={['Instagram','TikTok']} />
+        </div>
+        <div>
+          <div className="h">Card & StatBlock</div>
+          <Card>
+            <div style={{display:'flex',gap:24,flexWrap:'wrap'}}>
+              <StatBlock value="128K" label="Reichweite" delta="+12%" icon={<Icon name="users" size={18} />} />
+              <StatBlock value="€4.250" label="Ø Deal-Wert" delta="+8%" />
+              <StatBlock value="4,9" label="Bewertung" />
+            </div>
+          </Card>
+          <Card interactive accent="var(--accent)" style={{marginTop:16}}>
+            <strong style={{fontFamily:'var(--font-display)'}}>Interaktive Karte</strong>
+            <p style={{margin:'6px 0 0',color:'var(--text-muted)',fontSize:14}}>Hover hebt die Karte mit sanftem Schatten an.</p>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body></html>

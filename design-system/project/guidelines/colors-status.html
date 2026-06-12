@@ -1,0 +1,26 @@
+<!-- @dsCard group="Colors" viewport="700x160" name="Status & Trust" subtitle="Erfolg, Warnung, Gefahr, Info + Vertrauenssignale" -->
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin:0; padding:20px; background:var(--surface); display:flex; flex-direction:column; gap:14px; }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .chip { border-radius:var(--radius-md); padding:12px 14px; border:1px solid var(--border); }
+  .dot { width:14px; height:14px; border-radius:var(--radius-pill); margin-bottom:8px; }
+  .lbl { font-weight:700; font-size:13px; }
+  .var { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); }
+  .trust { display:flex; gap:10px; flex-wrap:wrap; }
+  .pill { display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:var(--radius-pill); font-size:12px; font-weight:700; }
+</style></head>
+<body>
+  <div class="grid">
+    <div class="chip"><div class="dot" style="background:var(--success)"></div><div class="lbl">Erfolg</div><div class="var">--success</div></div>
+    <div class="chip"><div class="dot" style="background:var(--warning)"></div><div class="lbl">Warnung</div><div class="var">--warning</div></div>
+    <div class="chip"><div class="dot" style="background:var(--danger)"></div><div class="lbl">Gefahr</div><div class="var">--danger</div></div>
+    <div class="chip"><div class="dot" style="background:var(--info)"></div><div class="lbl">Info</div><div class="var">--info</div></div>
+  </div>
+  <div class="trust">
+    <span class="pill" style="background:var(--teal-50); color:var(--teal-700)">● Verifiziert · --verified</span>
+    <span class="pill" style="background:var(--amber-100); color:#8a5a00">★ Bewertung · --rating-star</span>
+    <span class="pill" style="background:var(--teal-50); color:var(--teal-700)">🔒 Sichere Zahlung · --secure</span>
+  </div>
+</body></html>

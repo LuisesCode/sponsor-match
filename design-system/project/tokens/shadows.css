@@ -1,0 +1,33 @@
+/* SponsorMatch — Elevation & focus
+   Sanfte, kühl getönte Schatten (navy-basiert), keine harten Schwarztöne. */
+:root {
+  --shadow-xs:  0 1px 2px rgba(12, 26, 51, 0.06);
+  --shadow-sm:  0 1px 3px rgba(12, 26, 51, 0.08), 0 1px 2px rgba(12, 26, 51, 0.04);
+  --shadow-md:  0 4px 12px rgba(12, 26, 51, 0.08), 0 2px 4px rgba(12, 26, 51, 0.05);
+  --shadow-lg:  0 12px 28px rgba(12, 26, 51, 0.12), 0 4px 8px rgba(12, 26, 51, 0.06);
+  --shadow-xl:  0 24px 56px rgba(12, 26, 51, 0.16), 0 8px 16px rgba(12, 26, 51, 0.08);
+
+  /* Colored elevation — for primary/energy CTAs */
+  --shadow-brand: 0 8px 20px color-mix(in srgb, var(--navy-600) 28%, transparent);
+  --shadow-energy: 0 8px 20px color-mix(in srgb, var(--orange-500) 32%, transparent);
+
+  --focus-ring: 0 0 0 3px var(--ring);
+
+  /* Transitions */
+  --ease-out:  cubic-bezier(0.22, 1, 0.36, 1); /* @kind other */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* @kind other */
+  --dur-fast:  120ms; /* @kind other */
+  --dur-med:   200ms; /* @kind other */
+  --dur-slow:  320ms; /* @kind other */
+}
+
+:root[data-theme="dark"],
+.dark {
+  --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.35);
+  --shadow-lg:  0 12px 28px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-xl:  0 24px 56px rgba(0, 0, 0, 0.7), 0 8px 16px rgba(0, 0, 0, 0.5);
+  --shadow-brand: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-energy: 0 8px 22px color-mix(in srgb, var(--orange-500) 30%, transparent);
+}

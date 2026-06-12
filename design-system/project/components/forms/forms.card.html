@@ -1,0 +1,77 @@
+<!-- @dsCard group="Components" viewport="700x560" name="Forms" subtitle="Button, IconButton, Input, Select, Checkbox, Radio, Switch" -->
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin:0; padding:24px; background:var(--bg); font-family:var(--font-body); }
+  .grid { display:grid; gap:22px; }
+  .sec { display:flex; flex-direction:column; gap:10px; }
+  .h { font-family:var(--font-display); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+</style></head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Button, IconButton, Input, Select, Checkbox, Radio, RadioGroup, Switch, Icon } = window.SponsorMatchDesignSystem_a1f0e8;
+function Demo() {
+  return (
+    <div className="grid">
+      <div className="sec">
+        <div className="h">Buttons</div>
+        <div className="row">
+          <Button variant="primary">Primary</Button>
+          <Button variant="accent">Deal annehmen</Button>
+          <Button variant="energy" iconRight={<Icon name="arrow-right" size={18} />}>Match finden</Button>
+          <Button variant="outline">Outline</Button>
+          <Button variant="ghost">Ghost</Button>
+          <Button variant="danger">Ablehnen</Button>
+        </div>
+        <div className="row">
+          <Button size="sm" variant="primary">Small</Button>
+          <Button size="md" variant="primary">Medium</Button>
+          <Button size="lg" variant="primary">Large</Button>
+          <Button variant="primary" loading>Senden…</Button>
+          <Button variant="primary" disabled>Disabled</Button>
+          <IconButton name="heart" variant="outline" label="Merken" />
+          <IconButton name="send" variant="accent" label="Senden" />
+        </div>
+      </div>
+
+      <div className="sec">
+        <div className="h">Inputs & Select</div>
+        <div className="cols">
+          <Input label="E-Mail" placeholder="name@firma.de" iconLeft={<Icon name="mail" size={18} />} />
+          <Select label="Kategorie" placeholder="Wählen…" options={['Fußball','E-Sport','Fitness','Lifestyle']} />
+        </div>
+        <div className="cols">
+          <Input label="Suche" placeholder="Sportler, Verein, Creator…" iconLeft={<Icon name="search" size={18} />} />
+          <Input label="Passwort" type="password" defaultValue="x" error="Mindestens 8 Zeichen" />
+        </div>
+      </div>
+
+      <div className="sec">
+        <div className="h">Auswahl</div>
+        <div className="cols">
+          <RadioGroup defaultValue="creator">
+            <Radio value="sponsor" label="Ich bin Sponsor" description="Firma / Marke" />
+            <Radio value="creator" label="Ich werde gesponsert" description="Sportler / Creator" />
+          </RadioGroup>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            <Checkbox label="AGB akzeptieren" defaultChecked />
+            <Checkbox label="Newsletter" description="Max. 1× pro Monat" />
+            <Switch label="Profil öffentlich" defaultChecked />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body></html>

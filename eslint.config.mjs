@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Archivierter Design-Handoff (JSX-Prototypen, kein Produktivcode):
+    "design-system/**",
   ]),
 ]);
 

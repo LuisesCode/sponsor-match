@@ -28,7 +28,9 @@ export type Region =
 
 export type ConsentType = "terms" | "privacy" | "marketing" | "cookies";
 
-export interface Profile {
+// Hinweis: `type` statt `interface`, damit die Rows das
+// Record<string, unknown>-Constraint von postgrest-js erfüllen.
+export type Profile = {
   id: string;
   user_id: string;
   role: ProfileRole;
@@ -43,9 +45,9 @@ export interface Profile {
   deleted_at: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface Consent {
+export type Consent = {
   id: string;
   profile_id: string;
   type: ConsentType;
@@ -54,7 +56,7 @@ export interface Consent {
   revoked_at: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
 /** Spalten, die der Nutzer an der eigenen Profilzeile ändern darf (vgl. GRANT in Migration 0001). */
 export type ProfileUpdate = Partial<
@@ -70,12 +72,19 @@ export type ProfileUpdate = Partial<
   >
 >;
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       profiles: {
         Row: Profile;
-        Insert: never; // Anlage ausschließlich über den Signup-Trigger
+        // Anlage erfolgt ausschließlich über den Signup-Trigger;
+        // der Typ existiert nur, um das Schema-Constraint zu erfüllen.
+        Insert: {
+          user_id: string;
+          role: ProfileRole;
+          display_name: string;
+          slug: string;
+        };
         Update: ProfileUpdate;
         Relationships: [];
       };
@@ -88,17 +97,19 @@ export interface Database {
           granted_at?: string;
           revoked_at?: string | null;
         };
-        Update: { revoked_at: string | null };
+        Update: { revoked_at?: string | null };
         Relationships: [];
       };
     };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Views: { [_ in never]: never };
+    Functions: {
+      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+    };
     Enums: {
       profile_role: ProfileRole;
       region: Region;
       consent_type: ConsentType;
     };
-    CompositeTypes: Record<string, never>;
+    CompositeTypes: { [_ in never]: never };
   };
-}
+};

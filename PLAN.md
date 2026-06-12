@@ -4,7 +4,8 @@ Zweiseitiger Marktplatz für Sponsoring-Deals im DACH-Raum.
 Sponsoren (Firmen) ↔ Gesponserte (Sportler, Vereine, Creator). Monetarisierung über Provision pro Deal, abgesichert via Escrow (Stripe Connect).
 
 **Status:** In Umsetzung. Design-System-Handoff (Claude Design, 10.06.2026) liegt vor und ist in `sponsormatch/design-system/` archiviert.
-Umgesetzt (12.06.2026): Next.js-Scaffold (`sponsormatch/`), Design-Tokens (Light/Dark), Fonts (Archivo/Manrope/JetBrains Mono), 10 UI-Komponenten, Marketing-Landingpage. Noch offen aus dem Handoff: Form-/Feedback-Komponenten (Input, Select, Checkbox, Radio, Switch, Tabs, Dialog, Toast, Tooltip, IconButton) — werden bei M1/M2 portiert.
+Umgesetzt (12.06.2026): Next.js-Scaffold (`sponsormatch/`), Design-Tokens (Light/Dark), Fonts (Archivo/Manrope/JetBrains Mono), 10 UI-Komponenten, Marketing-Landingpage. Noch offen aus dem Handoff: Form-/Feedback-Komponenten (Select, Switch, Tabs, Dialog, Toast, Tooltip, IconButton) — werden bei M2 portiert.
+M1 umgesetzt (12.06.2026): Supabase-Anbindung (`lib/supabase/`, `proxy.ts`), Migrationen `profiles` + `consents` (RLS, Signup-Trigger), Registrierung mit Rollenwahl & Consent-Erfassung, Login/Logout, E-Mail-Verifizierung (`/auth/callback`), geschützter Bereich mit Onboarding-/Dashboard-Platzhaltern, Input/Checkbox/Radio portiert, Vitest. **Offen:** Supabase-MCP-Server war nicht erreichbar — Migrationen sind noch auf kein Projekt angewendet, `.env` ist mit Platzhaltern belegt.
 
 ---
 

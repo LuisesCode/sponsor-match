@@ -72,6 +72,74 @@ export type ProfileUpdate = Partial<
   >
 >;
 
+export type CategoryKind = "sport" | "industry" | "creator_niche";
+
+export type SponseeType = "athlete" | "club" | "creator";
+
+export type CompanySize = "1-10" | "11-50" | "51-200" | "201-1000" | "1000+";
+
+/** Zielgruppen-/Publikums-Angaben (jsonb) — bewusst schlank für M2/M3. */
+export type AudienceInfo = {
+  age_groups?: string[];
+  interests?: string[];
+};
+
+/** Social-Links eines Gesponserten (jsonb). */
+export type SocialLinks = {
+  instagram?: string;
+  tiktok?: string;
+  youtube?: string;
+  twitch?: string;
+  website?: string;
+};
+
+export type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  kind: CategoryKind;
+  parent_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SponsorProfile = {
+  id: string;
+  profile_id: string;
+  company_name: string;
+  industry_id: string | null;
+  company_size: CompanySize | null;
+  budget_min: number | null; // Cent
+  budget_max: number | null; // Cent
+  target_audience: AudienceInfo;
+  vat_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SponseeProfile = {
+  id: string;
+  profile_id: string;
+  type: SponseeType;
+  category_id: string | null;
+  reach_total: number | null;
+  audience: AudienceInfo;
+  social_links: SocialLinks;
+  media_kit_path: string | null;
+  past_sponsors: string[];
+  price_min: number | null; // Cent
+  price_max: number | null; // Cent
+  created_at: string;
+  updated_at: string;
+};
+
+export type SponsorProfileUpsert = Omit<SponsorProfile, "id" | "created_at" | "updated_at">;
+/** media_kit_path ist optional: fehlt es im Upsert, bleibt ein vorhandenes Mediakit erhalten. */
+export type SponseeProfileUpsert = Omit<
+  SponseeProfile,
+  "id" | "created_at" | "updated_at" | "media_kit_path"
+> & { media_kit_path?: string | null };
+
 export type Database = {
   public: {
     Tables: {
@@ -100,15 +168,38 @@ export type Database = {
         Update: { revoked_at?: string | null };
         Relationships: [];
       };
+      categories: {
+        Row: Category;
+        // Pflege nur durch Admin (RLS); Seed via Migration.
+        Insert: { name: string; slug: string; kind: CategoryKind; parent_id?: string | null };
+        Update: Partial<Pick<Category, "name" | "slug" | "kind" | "parent_id">>;
+        Relationships: [];
+      };
+      sponsor_profiles: {
+        Row: SponsorProfile;
+        Insert: SponsorProfileUpsert;
+        Update: Partial<SponsorProfileUpsert>;
+        Relationships: [];
+      };
+      sponsee_profiles: {
+        Row: SponseeProfile;
+        Insert: SponseeProfileUpsert;
+        Update: Partial<SponseeProfileUpsert>;
+        Relationships: [];
+      };
     };
     Views: { [_ in never]: never };
     Functions: {
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+      owns_profile: { Args: { p_profile_id: string }; Returns: boolean };
     };
     Enums: {
       profile_role: ProfileRole;
       region: Region;
       consent_type: ConsentType;
+      category_kind: CategoryKind;
+      sponsee_type: SponseeType;
+      company_size: CompanySize;
     };
     CompositeTypes: { [_ in never]: never };
   };

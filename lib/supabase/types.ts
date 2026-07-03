@@ -133,6 +133,46 @@ export type SponseeProfile = {
   updated_at: string;
 };
 
+export type ListingDirection = "seeking_sponsor" | "offering_sponsorship";
+
+export type ListingStatus = "draft" | "active" | "paused" | "closed";
+
+export type Listing = {
+  id: string;
+  author_profile_id: string;
+  direction: ListingDirection;
+  title: string;
+  description: string;
+  category_id: string | null;
+  region: Region | null;
+  budget_min: number | null; // Cent
+  budget_max: number | null; // Cent
+  reach_required: number | null;
+  status: ListingStatus;
+  expires_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ListingInsert = Omit<Listing, "id" | "created_at" | "updated_at" | "status"> & {
+  status?: ListingStatus;
+};
+
+export type ListingUpdate = Partial<
+  Pick<
+    Listing,
+    | "title"
+    | "description"
+    | "category_id"
+    | "region"
+    | "budget_min"
+    | "budget_max"
+    | "reach_required"
+    | "status"
+    | "expires_at"
+  >
+>;
+
 export type SponsorProfileUpsert = Omit<SponsorProfile, "id" | "created_at" | "updated_at">;
 /** media_kit_path ist optional: fehlt es im Upsert, bleibt ein vorhandenes Mediakit erhalten. */
 export type SponseeProfileUpsert = Omit<
@@ -187,6 +227,12 @@ export type Database = {
         Update: Partial<SponseeProfileUpsert>;
         Relationships: [];
       };
+      listings: {
+        Row: Listing;
+        Insert: ListingInsert;
+        Update: ListingUpdate;
+        Relationships: [];
+      };
     };
     Views: { [_ in never]: never };
     Functions: {
@@ -200,6 +246,8 @@ export type Database = {
       category_kind: CategoryKind;
       sponsee_type: SponseeType;
       company_size: CompanySize;
+      listing_direction: ListingDirection;
+      listing_status: ListingStatus;
     };
     CompositeTypes: { [_ in never]: never };
   };

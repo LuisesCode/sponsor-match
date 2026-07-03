@@ -30,6 +30,9 @@ export interface ButtonProps
   /** Als Link rendern */
   as?: "button" | "a";
   href?: string;
+  /** Nur für as="a" relevant */
+  target?: string;
+  rel?: string;
 }
 
 const SIZES: Record<ButtonSize, { height: string; padding: string; font: string; radius: string; gap: string; icon: number }> = {
@@ -87,6 +90,8 @@ export function Button({
   type = "button",
   as = "button",
   href,
+  target,
+  rel,
   onClick,
   children,
   style,
@@ -167,6 +172,8 @@ export function Button({
     return (
       <a
         href={isDisabled ? undefined : href}
+        target={target}
+        rel={rel}
         style={base}
         {...(handlers as unknown as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >

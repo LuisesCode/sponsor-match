@@ -51,6 +51,29 @@ export default async function AppLayout({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-wordmark-dark.svg" alt="SponsorMatch" style={{ height: 28 }} className="sm-dark-only" />
           </Link>
+          <nav
+            className="sm-hide-sm"
+            style={{ display: "flex", alignItems: "center", gap: "var(--space-5)", flex: 1, marginLeft: "var(--space-6)" }}
+          >
+            {[
+              ["/suche", "Suche"],
+              ["/listings", "Listings"],
+              ["/profil/bearbeiten", "Mein Profil"],
+            ].map(([href, label]) => (
+              <Link
+                key={href}
+                href={href}
+                style={{
+                  fontSize: "var(--fs-sm)",
+                  fontWeight: 600,
+                  color: "var(--text-muted)",
+                  textDecoration: "none",
+                }}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
             <span
               className="sm-hide-sm"

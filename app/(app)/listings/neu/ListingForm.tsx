@@ -77,6 +77,7 @@ export function ListingForm({ role, categoryOptions }: ListingFormProps) {
             label="Kategorie"
             options={categoryOptions}
             placeholder="Kategorie wählen (optional)"
+            defaultValue=""
             error={firstError("categoryId")}
           />
           <Select
@@ -84,6 +85,7 @@ export function ListingForm({ role, categoryOptions }: ListingFormProps) {
             label="Region"
             options={REGION_OPTIONS}
             placeholder="Region wählen (optional)"
+            defaultValue=""
             error={firstError("region")}
           />
         </div>

@@ -62,10 +62,13 @@ export async function updateProfile(
     if (!user) redirect("/login");
 
     // Pfadkonvention des Buckets: <user_id>/… — Besitzer schreibt nur dort.
-    const path = `${user.id}/avatar.${avatarExtension(avatar.type)}`;
+    // Eindeutiger Dateiname statt Upsert: der Upsert-Pfad der Storage-API
+    // braucht eine SELECT-Policy (ON CONFLICT), ein reiner Insert nicht.
+    const fileName = `avatar-${Date.now()}.${avatarExtension(avatar.type)}`;
+    const path = `${user.id}/${fileName}`;
     const { error: uploadError } = await supabase.storage
       .from("avatars")
-      .upload(path, avatar, { upsert: true, contentType: avatar.type });
+      .upload(path, avatar, { contentType: avatar.type });
 
     if (uploadError) {
       console.error("Avatar-Upload fehlgeschlagen:", uploadError);
@@ -76,8 +79,17 @@ export async function updateProfile(
     }
 
     const { data } = supabase.storage.from("avatars").getPublicUrl(path);
-    // Cache-Buster, damit der neue Avatar sofort sichtbar ist.
-    avatarUrl = `${data.publicUrl}?v=${Date.now()}`;
+    avatarUrl = data.publicUrl;
+
+    // Alte Avatar-Dateien aufräumen — Best-Effort: braucht die
+    // avatars_owner_select-Policy; solange sie fehlt, bleibt Altbestand liegen.
+    const { data: existing } = await supabase.storage.from("avatars").list(user.id);
+    const stale = (existing ?? [])
+      .filter((f) => f.name.startsWith("avatar-") && f.name !== fileName)
+      .map((f) => `${user.id}/${f.name}`);
+    if (stale.length > 0) {
+      await supabase.storage.from("avatars").remove(stale);
+    }
   }
 
   // ---- Rollenfelder (gleiche Schemas wie im Onboarding) -----------------

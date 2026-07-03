@@ -24,8 +24,9 @@ export async function createListing(
   const parsed = listingSchema.safeParse({
     title: formData.get("title"),
     description: formData.get("description"),
-    categoryId: formData.get("categoryId"),
-    region: formData.get("region"),
+    // Selects mit disabled-Platzhalter fehlen in der FormData → wie "" behandeln.
+    categoryId: formData.get("categoryId") ?? "",
+    region: formData.get("region") ?? "",
     budgetMin: formData.get("budgetMin"),
     budgetMax: formData.get("budgetMax"),
     reachRequired: formData.get("reachRequired"),

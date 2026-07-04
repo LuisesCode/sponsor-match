@@ -19,6 +19,7 @@ import {
 } from "@/lib/validation/listing";
 import { REGIONS } from "@/lib/validation/onboarding";
 
+import { ContactButton } from "../../nachrichten/ContactButton";
 import { setListingStatus } from "../actions";
 
 const REGION_LABELS = new Map<string, string>(REGIONS.map(([value, label]) => [value, label]));
@@ -164,11 +165,8 @@ export default async function ListingDetailPage({ params }: { params: Promise<Pa
                   Profil ansehen
                 </Button>
               </Link>
-              {!isOwn && (
-                // Platzhalter: Realtime-Chat folgt in M4.
-                <Button variant="primary" size="sm" disabled title="Nachrichten folgen in Kürze">
-                  Kontakt aufnehmen (bald)
-                </Button>
+              {!isOwn && profile.role !== "admin" && profile.role !== author.role && (
+                <ContactButton counterpartProfileId={author.id} listingId={listing.id} />
               )}
             </div>
           </div>

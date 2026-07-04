@@ -173,6 +173,45 @@ export type ListingUpdate = Partial<
   >
 >;
 
+export type Conversation = {
+  id: string;
+  listing_id: string | null;
+  sponsor_profile_id: string;
+  sponsee_profile_id: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Message = {
+  id: string;
+  conversation_id: string;
+  sender_profile_id: string;
+  body: string;
+  read_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NotificationType = "new_message";
+
+/** Payload einer new_message-Notification (jsonb, vom DB-Trigger befüllt). */
+export type NotificationPayload = {
+  conversation_id?: string;
+  message_id?: string;
+  sender_profile_id?: string;
+};
+
+export type Notification = {
+  id: string;
+  profile_id: string;
+  type: NotificationType;
+  payload: NotificationPayload;
+  read_at: string | null;
+  emailed_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type SponsorProfileUpsert = Omit<SponsorProfile, "id" | "created_at" | "updated_at">;
 /** media_kit_path ist optional: fehlt es im Upsert, bleibt ein vorhandenes Mediakit erhalten. */
 export type SponseeProfileUpsert = Omit<
@@ -231,6 +270,34 @@ export type Database = {
         Row: Listing;
         Insert: ListingInsert;
         Update: ListingUpdate;
+        Relationships: [];
+      };
+      conversations: {
+        Row: Conversation;
+        Insert: {
+          listing_id?: string | null;
+          sponsor_profile_id: string;
+          sponsee_profile_id: string;
+        };
+        // Kein Update-Grant für authenticated; updated_at pflegt der Trigger.
+        Update: Record<PropertyKey, never>;
+        Relationships: [];
+      };
+      messages: {
+        Row: Message;
+        Insert: {
+          conversation_id: string;
+          sender_profile_id: string;
+          body: string;
+        };
+        Update: { read_at?: string | null };
+        Relationships: [];
+      };
+      notifications: {
+        Row: Notification;
+        // Insert nur über den DB-Trigger (Security Definer).
+        Insert: never;
+        Update: { read_at?: string | null };
         Relationships: [];
       };
     };

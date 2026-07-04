@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { logout } from "@/app/(auth)/actions";
+import { getUnreadMessageCount } from "@/app/(app)/nachrichten/data";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { getCurrentProfile } from "@/lib/supabase/profile";
@@ -24,6 +25,8 @@ export default async function AppLayout({
   if (!profile) {
     redirect("/login");
   }
+
+  const unreadCount = await getUnreadMessageCount(profile.id);
 
   return (
     <>
@@ -58,12 +61,16 @@ export default async function AppLayout({
             {[
               ["/suche", "Suche"],
               ["/listings", "Listings"],
+              ["/nachrichten", "Nachrichten"],
               ["/profil/bearbeiten", "Mein Profil"],
             ].map(([href, label]) => (
               <Link
                 key={href}
                 href={href}
                 style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "var(--space-2)",
                   fontSize: "var(--fs-sm)",
                   fontWeight: 600,
                   color: "var(--text-muted)",
@@ -71,6 +78,11 @@ export default async function AppLayout({
                 }}
               >
                 {label}
+                {href === "/nachrichten" && unreadCount > 0 && (
+                  <Badge tone="energy" size="sm" aria-label={`${unreadCount} ungelesene Nachrichten`}>
+                    <span style={{ fontFamily: "var(--font-mono)" }}>{unreadCount}</span>
+                  </Badge>
+                )}
               </Link>
             ))}
           </nav>

@@ -30,7 +30,7 @@ from (values
   ('finanzhanse-ag',       'Versicherungs- und Vorsorgelösungen für Sportler:innen und Vereine — norddeutsch, verlässlich, langfristig.', 'hamburg'),
   ('gipfelkleidung-ag',    'Nachhaltige Outdoor-Bekleidung aus der Schweiz. Wir suchen Partner mit echter Bergleidenschaft.', 'ch')
 ) as v(slug, bio, region)
-where p.slug = v.slug;
+where p.slug = v.slug or p.slug like v.slug || '-%';
 
 -- ---- Rollenprofile: Gesponserte ---------------------------------------
 insert into public.sponsee_profiles
@@ -59,7 +59,7 @@ from (values
    '{"instagram":"https://instagram.com/eisbaeren.tirol"}',
    array['Tiroler Sparkasse'], 100000, 1000000)
 ) as v(slug, type, category_slug, reach, audience, socials, past, price_min, price_max)
-join public.profiles p on p.slug = v.slug
+join public.profiles p on (p.slug = v.slug or p.slug like v.slug || '-%')
 join public.categories c on c.slug = v.category_slug
 on conflict (profile_id) do nothing;
 
@@ -77,7 +77,7 @@ from (values
   ('gipfelkleidung-ag', 'GipfelKleidung AG', 'mode-lifestyle', '11-50', 80000, 600000,
    '{"age_groups":["18–24","25–34"],"interests":["Outdoor","Klettern","Nachhaltigkeit"]}')
 ) as v(slug, company, industry_slug, size, budget_min, budget_max, audience)
-join public.profiles p on p.slug = v.slug
+join public.profiles p on (p.slug = v.slug or p.slug like v.slug || '-%')
 join public.categories c on c.slug = v.industry_slug
 on conflict (profile_id) do nothing;
 
@@ -134,7 +134,7 @@ from (values
    'Ausrüstung plus Tagessätze für Kletterer, Bergläuferinnen und Alpinisten mit nachvollziehbarer Outdoor-Community. Nachhaltigkeit ist bei uns kein Feigenblatt — das sollte zu deinen Inhalten passen.',
    'sonstiger-sport', 'ch', 80000, 600000, 15000)
 ) as v(slug, direction, title, description, category_slug, region, budget_min, budget_max, reach_required)
-join public.profiles p on p.slug = v.slug
+join public.profiles p on (p.slug = v.slug or p.slug like v.slug || '-%')
 left join public.categories c on c.slug = v.category_slug
 where not exists (
   select 1 from public.listings l

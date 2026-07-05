@@ -23,6 +23,45 @@ export function formatCents(cents: number): string {
   );
 }
 
+const timeFormat = new Intl.DateTimeFormat("de-DE", { hour: "2-digit", minute: "2-digit" });
+const dateFormat = new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" });
+
+function isSameDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+/** "14:32" */
+export function formatTime(iso: string): string {
+  return timeFormat.format(new Date(iso));
+}
+
+/**
+ * Zeitstempel für Nachrichtenlisten: heute → "14:32",
+ * gestern → "Gestern", sonst → "04.07.2026".
+ */
+export function formatMessageTimestamp(iso: string, now: Date = new Date()): string {
+  const date = new Date(iso);
+  if (isSameDay(date, now)) return timeFormat.format(date);
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (isSameDay(date, yesterday)) return "Gestern";
+  return dateFormat.format(date);
+}
+
+/** Tages-Trenner im Chatverlauf: "Heute", "Gestern" oder "04.07.2026". */
+export function formatDayLabel(iso: string, now: Date = new Date()): string {
+  const date = new Date(iso);
+  if (isSameDay(date, now)) return "Heute";
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (isSameDay(date, yesterday)) return "Gestern";
+  return dateFormat.format(date);
+}
+
 /** Preis-/Budgetspanne: "€500 – €5.000", "ab €500", "bis €5.000" oder null. */
 export function formatCentsRange(min: number | null, max: number | null): string | null {
   if (min != null && max != null) return `${formatCents(min)} – ${formatCents(max)}`;

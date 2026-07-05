@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { formatCents, formatCentsRange, formatNumber } from "@/lib/format";
+import {
+  formatCents,
+  formatCentsRange,
+  formatDayLabel,
+  formatMessageTimestamp,
+  formatNumber,
+  formatTime,
+} from "@/lib/format";
 
 describe("formatNumber", () => {
   it("nutzt deutschen Tausenderpunkt", () => {
@@ -31,5 +38,35 @@ describe("formatCentsRange", () => {
 
   it("liefert null ohne Angaben", () => {
     expect(formatCentsRange(null, null)).toBeNull();
+  });
+});
+
+describe("Nachrichten-Zeitstempel (M4)", () => {
+  // Fixes "jetzt": Samstag, 04.07.2026 15:00 lokale Zeit.
+  const now = new Date(2026, 6, 4, 15, 0);
+  const today = new Date(2026, 6, 4, 14, 32).toISOString();
+  const yesterday = new Date(2026, 6, 3, 9, 5).toISOString();
+  const older = new Date(2026, 5, 28, 20, 15).toISOString();
+
+  it("formatTime liefert Uhrzeit im 24h-Format", () => {
+    expect(formatTime(today)).toBe("14:32");
+  });
+
+  it("formatMessageTimestamp: heute → Uhrzeit", () => {
+    expect(formatMessageTimestamp(today, now)).toBe("14:32");
+  });
+
+  it("formatMessageTimestamp: gestern → „Gestern“", () => {
+    expect(formatMessageTimestamp(yesterday, now)).toBe("Gestern");
+  });
+
+  it("formatMessageTimestamp: älter → deutsches Datum", () => {
+    expect(formatMessageTimestamp(older, now)).toBe("28.06.2026");
+  });
+
+  it("formatDayLabel: heute/gestern/Datum", () => {
+    expect(formatDayLabel(today, now)).toBe("Heute");
+    expect(formatDayLabel(yesterday, now)).toBe("Gestern");
+    expect(formatDayLabel(older, now)).toBe("28.06.2026");
   });
 });

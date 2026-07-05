@@ -9,6 +9,7 @@ import { StatBlock } from "@/components/ui/StatBlock";
 import { Tag } from "@/components/ui/Tag";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
 import { formatCentsRange, formatNumber } from "@/lib/format";
+import { getCurrentProfile } from "@/lib/supabase/profile";
 import { createClient } from "@/lib/supabase/server";
 import type {
   Category,
@@ -17,6 +18,8 @@ import type {
   SponsorProfile,
 } from "@/lib/supabase/types";
 import { REGIONS, SPONSEE_TYPE_LABELS } from "@/lib/validation/onboarding";
+
+import { ContactButton } from "../../nachrichten/ContactButton";
 
 const REGION_LABELS = new Map<string, string>(REGIONS.map(([value, label]) => [value, label]));
 
@@ -101,11 +104,17 @@ export async function generateMetadata({
 /** Öffentliches Profil (für eingeloggte Nutzer — Marktplatz). */
 export default async function ProfilePage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
-  const data = await loadProfile(slug);
+  const [data, viewer] = await Promise.all([loadProfile(slug), getCurrentProfile()]);
   if (!data) notFound();
 
   const { profile, sponsor, sponsee, category, mediaKitUrl } = data;
   const regionLabel = profile.region ? REGION_LABELS.get(profile.region) : null;
+  // Kontakt nur zwischen den beiden Marktplatz-Seiten (Sponsor ↔ Gesponserter).
+  const canContact =
+    viewer != null &&
+    viewer.id !== profile.id &&
+    ((viewer.role === "sponsor" && profile.role === "sponsee") ||
+      (viewer.role === "sponsee" && profile.role === "sponsor"));
 
   const audience = sponsor?.target_audience ?? sponsee?.audience ?? {};
   const interests = audience.interests ?? [];
@@ -172,6 +181,11 @@ export default async function ProfilePage({ params }: { params: Promise<Params> 
                 </span>
               )}
             </p>
+          )}
+          {canContact && (
+            <div style={{ marginTop: "var(--space-4)" }}>
+              <ContactButton counterpartProfileId={profile.id} label="Nachricht senden" />
+            </div>
           )}
         </div>
       </Card>

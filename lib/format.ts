@@ -34,6 +34,11 @@ function isSameDay(a: Date, b: Date): boolean {
   );
 }
 
+/** "04.07.2026" (auch für reine Datumswerte wie "2026-07-04"). */
+export function formatDate(iso: string): string {
+  return dateFormat.format(new Date(iso));
+}
+
 /** "14:32" */
 export function formatTime(iso: string): string {
   return timeFormat.format(new Date(iso));

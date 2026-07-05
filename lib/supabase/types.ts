@@ -192,13 +192,114 @@ export type Message = {
   updated_at: string;
 };
 
-export type NotificationType = "new_message";
+export type DealStatus =
+  | "draft"
+  | "offered"
+  | "negotiating"
+  | "agreed"
+  | "funded"
+  | "in_progress"
+  | "completed"
+  | "declined"
+  | "cancelled"
+  | "disputed";
 
-/** Payload einer new_message-Notification (jsonb, vom DB-Trigger befüllt). */
+export type MilestoneStatus = "pending" | "submitted" | "approved" | "paid" | "disputed";
+
+export type Deal = {
+  id: string;
+  conversation_id: string;
+  listing_id: string | null;
+  sponsor_profile_id: string;
+  sponsee_profile_id: string;
+  proposed_by_profile_id: string;
+  title: string;
+  description: string;
+  amount_total: number; // Cent
+  currency: "eur";
+  commission_pct: number; // beim Anlegen eingefroren
+  commission_amount: number; // Cent
+  status: DealStatus;
+  cancelled_reason: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type DealMilestone = {
+  id: string;
+  deal_id: string;
+  position: number;
+  title: string;
+  due_date: string | null;
+  amount: number; // Cent
+  status: MilestoneStatus;
+  proof_url: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+/** Meilenstein-Eingabe für create_deal/counter_deal_offer (jsonb-Parameter). */
+export type DealMilestoneInput = {
+  title: string;
+  amount: number; // Cent
+  due_date?: string | null;
+};
+
+/** Strukturierter Vertrags-Snapshot (contracts.content, von build_contract_content befüllt). */
+export type ContractContent = {
+  template_version: string;
+  created_at: string;
+  deal: {
+    id: string;
+    title: string;
+    description: string;
+    amount_total: number;
+    currency: string;
+    commission_pct: number;
+    commission_amount: number;
+    payout_amount: number;
+    listing_id: string | null;
+  };
+  sponsor: { profile_id: string; display_name: string; company_name: string | null };
+  sponsee: { profile_id: string; display_name: string };
+  milestones: { position: number; title: string; amount: number; due_date: string | null }[];
+};
+
+export type Contract = {
+  id: string;
+  deal_id: string;
+  template_version: string;
+  content: ContractContent;
+  sponsor_accepted_at: string | null;
+  sponsee_accepted_at: string | null;
+  pdf_url: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PlatformSetting = {
+  key: string;
+  value: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NotificationType =
+  | "new_message"
+  | "deal_proposed"
+  | "deal_countered"
+  | "contract_accepted"
+  | "deal_status_changed";
+
+/** Payload einer Notification (jsonb, von DB-Trigger bzw. Deal-Funktionen befüllt). */
 export type NotificationPayload = {
   conversation_id?: string;
   message_id?: string;
   sender_profile_id?: string;
+  deal_id?: string;
+  actor_profile_id?: string;
+  old_status?: DealStatus;
+  new_status?: DealStatus;
 };
 
 export type Notification = {
@@ -300,11 +401,62 @@ export type Database = {
         Update: { read_at?: string | null };
         Relationships: [];
       };
+      deals: {
+        Row: Deal;
+        // Schreibzugriffe nur über die Security-Definer-Funktionen (M5).
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      deal_milestones: {
+        Row: DealMilestone;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      contracts: {
+        Row: Contract;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      platform_settings: {
+        Row: PlatformSetting;
+        // Pflege nur durch Admin (RLS).
+        Insert: { key: string; value: Record<string, unknown> };
+        Update: { value?: Record<string, unknown> };
+        Relationships: [];
+      };
     };
     Views: { [_ in never]: never };
     Functions: {
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       owns_profile: { Args: { p_profile_id: string }; Returns: boolean };
+      create_deal: {
+        Args: {
+          p_conversation_id: string;
+          p_title: string;
+          p_description: string;
+          p_amount_total: number;
+          p_milestones: DealMilestoneInput[];
+        };
+        Returns: string;
+      };
+      counter_deal_offer: {
+        Args: {
+          p_deal_id: string;
+          p_title: string;
+          p_description: string;
+          p_amount_total: number;
+          p_milestones: DealMilestoneInput[];
+        };
+        Returns: null;
+      };
+      accept_contract: { Args: { p_deal_id: string }; Returns: null };
+      advance_deal_status: {
+        Args: { p_deal_id: string; p_new_status: DealStatus; p_reason?: string | null };
+        Returns: null;
+      };
     };
     Enums: {
       profile_role: ProfileRole;
@@ -315,6 +467,8 @@ export type Database = {
       company_size: CompanySize;
       listing_direction: ListingDirection;
       listing_status: ListingStatus;
+      deal_status: DealStatus;
+      milestone_status: MilestoneStatus;
     };
     CompositeTypes: { [_ in never]: never };
   };

@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import { getOpenDealForConversation } from "@/app/(app)/deals/data";
+import { DealStatusBadge } from "@/app/(app)/deals/DealStatusBadge";
 import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
 import { getCurrentProfile } from "@/lib/supabase/profile";
 import { createClient } from "@/lib/supabase/server";
-import type { Conversation, Message, Profile } from "@/lib/supabase/types";
+import type { Conversation, Deal, Message, Profile } from "@/lib/supabase/types";
 
 import { ChatView } from "./ChatView";
 
@@ -23,6 +26,7 @@ async function loadConversation(
   listingTitle: string | null;
   messages: Message[];
   myProfileId: string;
+  openDeal: Deal | null;
 } | null> {
   if (!UUID_RE.test(conversationId)) return null;
   const profile = await getCurrentProfile();
@@ -42,7 +46,7 @@ async function loadConversation(
       ? conversation.sponsee_profile_id
       : conversation.sponsor_profile_id;
 
-  const [{ data: counterpart }, listingResult, { data: messages }] = await Promise.all([
+  const [{ data: counterpart }, listingResult, { data: messages }, openDeal] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", counterpartId).maybeSingle(),
     conversation.listing_id
       ? supabase.from("listings").select("id, title").eq("id", conversation.listing_id).maybeSingle()
@@ -52,6 +56,7 @@ async function loadConversation(
       .select("*")
       .eq("conversation_id", conversationId)
       .order("created_at", { ascending: true }),
+    getOpenDealForConversation(conversationId),
   ]);
 
   return {
@@ -60,6 +65,7 @@ async function loadConversation(
     listingTitle: listingResult.data?.title ?? null,
     messages: messages ?? [],
     myProfileId: profile.id,
+    openDeal,
   };
 }
 
@@ -83,7 +89,7 @@ export default async function ConversationPage({ params }: { params: Promise<Par
   const data = await loadConversation(conversationId);
   if (!data) notFound();
 
-  const { conversation, counterpart, listingTitle, messages, myProfileId } = data;
+  const { conversation, counterpart, listingTitle, messages, myProfileId, openDeal } = data;
 
   return (
     <div style={{ maxWidth: "var(--container-sm)", margin: "0 auto", display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
@@ -141,6 +147,22 @@ export default async function ConversationPage({ params }: { params: Promise<Par
               </span>
             )}
           </div>
+          {/* Deal-CTA: laufenden Deal öffnen oder neuen vorschlagen (M5). */}
+          {counterpart &&
+            (openDeal ? (
+              <Link href={`/deals/${openDeal.id}`} style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "var(--space-2)" }}>
+                <DealStatusBadge status={openDeal.status} size="sm" />
+                <Button variant="outline" size="sm">
+                  Zum Deal
+                </Button>
+              </Link>
+            ) : (
+              <Link href={`/deals/neu?conversation=${conversation.id}`} style={{ textDecoration: "none" }}>
+                <Button variant="accent" size="sm">
+                  Deal vorschlagen
+                </Button>
+              </Link>
+            ))}
         </div>
 
         <ChatView

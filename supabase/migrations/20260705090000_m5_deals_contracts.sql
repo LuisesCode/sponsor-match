@@ -352,6 +352,23 @@ revoke execute on function public.notify_deal_event(uuid, text, uuid, uuid, uuid
 -- API-Funktionen (Execute-Grant für authenticated)
 -- =====================================================================
 
+-- Aktueller Provisionssatz für die Anzeige im Deal-Formular (verbindlich
+-- friert create_deal() den Satz serverseitig ein).
+create or replace function public.get_commission_pct()
+returns numeric
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select (value->>'pct')::numeric
+  from public.platform_settings
+  where key = 'commission_pct';
+$$;
+
+revoke execute on function public.get_commission_pct() from public, anon;
+grant execute on function public.get_commission_pct() to authenticated;
+
 -- Deal aus einer Konversation heraus vorschlagen: friert die Provision ein,
 -- legt Meilensteine + Vertrag an und benachrichtigt die Gegenseite.
 create or replace function public.create_deal(

@@ -453,6 +453,7 @@ export type Database = {
         Returns: null;
       };
       accept_contract: { Args: { p_deal_id: string }; Returns: null };
+      get_commission_pct: { Args: Record<PropertyKey, never>; Returns: number };
       advance_deal_status: {
         Args: { p_deal_id: string; p_new_status: DealStatus; p_reason?: string | null };
         Returns: null;

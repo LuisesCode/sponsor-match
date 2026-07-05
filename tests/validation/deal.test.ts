@@ -62,7 +62,7 @@ describe("proposeDealSchema", () => {
 
 describe("counterDealSchema", () => {
   it("verlangt eine Deal-ID statt einer Konversation", () => {
-    const { conversationId: _conversationId, ...rest } = valid;
+    const rest = { title: valid.title, description: valid.description, milestones: valid.milestones };
     expect(counterDealSchema.safeParse({ ...rest, dealId: uuid }).success).toBe(true);
     expect(counterDealSchema.safeParse({ ...rest, dealId: "nope" }).success).toBe(false);
   });

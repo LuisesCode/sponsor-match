@@ -62,6 +62,7 @@ export default async function AppLayout({
               ["/suche", "Suche"],
               ["/listings", "Listings"],
               ["/nachrichten", "Nachrichten"],
+              ["/deals", "Deals"],
               ["/profil/bearbeiten", "Mein Profil"],
             ].map(([href, label]) => (
               <Link

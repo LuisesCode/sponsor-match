@@ -34,6 +34,11 @@ function isSameDay(a: Date, b: Date): boolean {
   );
 }
 
+/** "04.07.2026" (auch für reine Datumswerte wie "2026-07-04"). */
+export function formatDate(iso: string): string {
+  return dateFormat.format(new Date(iso));
+}
+
 /** "14:32" */
 export function formatTime(iso: string): string {
   return timeFormat.format(new Date(iso));
@@ -60,6 +65,12 @@ export function formatDayLabel(iso: string, now: Date = new Date()): string {
   yesterday.setDate(now.getDate() - 1);
   if (isSameDay(date, yesterday)) return "Gestern";
   return dateFormat.format(date);
+}
+
+/** Cent → Euro-Eingabewert für Formulare: 150000 → "1500", 100050 → "1000,50". */
+export function centsToEuroInput(cents: number): string {
+  if (cents % 100 === 0) return String(cents / 100);
+  return (cents / 100).toFixed(2).replace(".", ",");
 }
 
 /** Preis-/Budgetspanne: "€500 – €5.000", "ab €500", "bis €5.000" oder null. */

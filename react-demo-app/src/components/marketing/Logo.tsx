@@ -14,7 +14,7 @@ export function Logo({
   height?: number;
   className?: string;
 }) {
-  const textColor = tone === "white" ? "#FFFFFF" : "#0C1A33";
+  const textColor = tone === "white" ? "#FFFFFF" : "#34190D";
   return (
     <svg
       width={height * 5}
@@ -26,10 +26,10 @@ export function Logo({
       aria-label="Flenzko"
       className={className}
     >
-      <rect width="30" height="30" rx="7.5" fill="#1B3A6B" />
+      <rect width="30" height="30" rx="7.5" fill="#B2532D" />
       <path d="M6.9 10.3 L13.4 15 L6.9 19.7 Z" fill="#FFFFFF" />
-      <path d="M23.1 10.3 L16.6 15 L23.1 19.7 Z" fill="#16B486" />
-      <circle cx="15" cy="15" r="1.5" fill="#FF6B35" />
+      <path d="M23.1 10.3 L16.6 15 L23.1 19.7 Z" fill="#F0961F" />
+      <circle cx="15" cy="15" r="1.5" fill="#FFFFFF" />
       <text
         x="38"
         y="20.5"
@@ -39,7 +39,7 @@ export function Logo({
         letterSpacing="-0.3"
         fill={textColor}
       >
-        Flen<tspan fill="#16B486">zko</tspan>
+        Flen<tspan fill="#DE7F11">zko</tspan>
       </text>
     </svg>
   );

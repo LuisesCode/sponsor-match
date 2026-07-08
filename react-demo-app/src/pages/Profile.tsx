@@ -90,7 +90,7 @@ export default function Profile() {
   return (
     <div style={{ maxWidth: "var(--container-sm)", margin: "0 auto", display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
       <Card padding="none">
-        <div style={{ height: 120, background: "linear-gradient(120deg, var(--navy-600), var(--teal-600))" }} />
+        <div style={{ height: 120, background: "linear-gradient(120deg, var(--clay-600), var(--sage-600))" }} />
         <div style={{ padding: "0 var(--space-6) var(--space-6)", marginTop: -40 }}>
           <Avatar
             name={profile.display_name}

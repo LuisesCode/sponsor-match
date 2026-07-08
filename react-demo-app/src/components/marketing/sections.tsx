@@ -109,6 +109,15 @@ export function Hero() {
   return (
     <section style={{ position: "relative", overflow: "hidden" }}>
       <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(65% 55% at 12% -10%, color-mix(in srgb, var(--marigold-300) 30%, transparent), transparent 60%), radial-gradient(55% 60% at 88% 0%, color-mix(in srgb, var(--clay-300) 34%, transparent), transparent 62%), radial-gradient(70% 50% at 50% 115%, color-mix(in srgb, var(--sage-300) 22%, transparent), transparent 65%)",
+        }}
+      />
+      <div
         style={{
           maxWidth: "var(--container)",
           margin: "0 auto",
@@ -117,6 +126,7 @@ export function Hero() {
           gridTemplateColumns: "1.05fr 0.95fr",
           gap: 56,
           alignItems: "center",
+          position: "relative",
         }}
         className="fk-hero-grid"
       >
@@ -153,7 +163,7 @@ export function Hero() {
               position: "absolute",
               inset: "-10% -6%",
               background:
-                "radial-gradient(60% 60% at 70% 30%, color-mix(in srgb, var(--teal-500) 22%, transparent), transparent), radial-gradient(50% 50% at 20% 80%, color-mix(in srgb, var(--navy-500) 26%, transparent), transparent)",
+                "radial-gradient(60% 60% at 70% 30%, color-mix(in srgb, var(--sage-500) 22%, transparent), transparent), radial-gradient(50% 50% at 20% 80%, color-mix(in srgb, var(--clay-500) 26%, transparent), transparent)",
               filter: "blur(8px)",
             }}
           />
@@ -262,7 +272,7 @@ export function HowItWorks() {
                     width: 52,
                     height: 52,
                     borderRadius: "var(--radius-lg)",
-                    background: "var(--navy-600)",
+                    background: "var(--clay-600)",
                     color: "#fff",
                     display: "inline-flex",
                     alignItems: "center",
@@ -418,7 +428,7 @@ function CtaPanel({
         minWidth: 280,
         padding: "var(--space-10)",
         borderRadius: "var(--radius-2xl)",
-        background: tone === "sponsor" ? "linear-gradient(160deg, var(--navy-600), var(--navy-800))" : "var(--surface)",
+        background: tone === "sponsor" ? "linear-gradient(160deg, var(--clay-600), var(--clay-800))" : "var(--surface)",
         color: tone === "sponsor" ? "#fff" : "var(--text)",
         border: tone === "sponsor" ? "none" : "1px solid var(--border)",
         boxShadow: "var(--shadow-lg)",
@@ -431,7 +441,7 @@ function CtaPanel({
           fontSize: "var(--fs-2xs)",
           letterSpacing: "0.12em",
           textTransform: "uppercase",
-          color: tone === "sponsor" ? "var(--teal-300)" : "var(--accent)",
+          color: tone === "sponsor" ? "var(--sage-300)" : "var(--accent)",
         }}
       >
         {eyebrow}
@@ -441,9 +451,9 @@ function CtaPanel({
         {points.map((p, i) => (
           <li
             key={i}
-            style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: "var(--fs-base)", color: tone === "sponsor" ? "var(--navy-100)" : "var(--text-muted)" }}
+            style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: "var(--fs-base)", color: tone === "sponsor" ? "var(--clay-100)" : "var(--text-muted)" }}
           >
-            <Icon name="check" size={20} color={tone === "sponsor" ? "var(--teal-300)" : "var(--accent)"} />
+            <Icon name="check" size={20} color={tone === "sponsor" ? "var(--sage-300)" : "var(--accent)"} />
             {p}
           </li>
         ))}
@@ -499,7 +509,7 @@ export function SiteFooter() {
     { h: "Rechtliches", items: ["Impressum", "Datenschutz", "AGB", "Escrow & Sicherheit"] },
   ];
   return (
-    <footer style={{ background: "var(--navy-900)", color: "var(--navy-100)" }}>
+    <footer style={{ background: "var(--clay-900)", color: "var(--clay-100)" }}>
       <div
         style={{
           maxWidth: "var(--container)",
@@ -513,7 +523,7 @@ export function SiteFooter() {
       >
         <div>
           <Logo tone="white" />
-          <p style={{ marginTop: 16, fontSize: "var(--fs-sm)", color: "var(--navy-200)", maxWidth: 280, lineHeight: 1.6 }}>
+          <p style={{ marginTop: 16, fontSize: "var(--fs-sm)", color: "var(--clay-200)", maxWidth: 280, lineHeight: 1.6 }}>
             Der vertrauenswürdige Sponsoring-Marktplatz für den deutschsprachigen Raum.
           </p>
           <div style={{ marginTop: 16 }}>
@@ -526,7 +536,7 @@ export function SiteFooter() {
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               {c.items.map((it) => (
                 <li key={it}>
-                  <a href="#" style={{ fontSize: "var(--fs-sm)", color: "var(--navy-200)", textDecoration: "none" }}>
+                  <a href="#" style={{ fontSize: "var(--fs-sm)", color: "var(--clay-200)", textDecoration: "none" }}>
                     {it}
                   </a>
                 </li>
@@ -537,12 +547,12 @@ export function SiteFooter() {
       </div>
       <div
         style={{
-          borderTop: "1px solid var(--navy-700)",
+          borderTop: "1px solid var(--clay-700)",
           padding: "20px var(--gutter)",
           maxWidth: "var(--container)",
           margin: "0 auto",
           fontSize: "var(--fs-xs)",
-          color: "var(--navy-300)",
+          color: "var(--clay-300)",
           display: "flex",
           justifyContent: "space-between",
           flexWrap: "wrap",

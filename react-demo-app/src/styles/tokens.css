@@ -1,68 +1,68 @@
 /* =====================================================================
    Flenzko — Design Tokens
-   Quelle: Flenzko Design System (Claude-Design-Handoff, Juni 2026)
-   Primär: Navy (Vertrauen) · Akzent 1: Teal (Deals/Escrow) · Akzent 2: Orange (Energie)
+   Quelle: Flenzko Design System (Claude-Design-Handoff, Juli 2026 — warme Neuauflage)
+   Primär: Terrakotta (Clay) · Akzent 1: Salbei (Sage, Deals/Escrow) · Akzent 2: Marigold (Energie)
    Schriftvariablen (--font-display/--font-body/--font-mono) kommen aus index.css (Google Fonts).
    ===================================================================== */
 
 :root {
-  /* ---- Brand: Navy (primary) ---- */
-  --navy-50:  #EEF2F8;
-  --navy-100: #D9E2F0;
-  --navy-200: #B3C4DF;
-  --navy-300: #7F9AC4;
-  --navy-400: #4E6FA3;
-  --navy-500: #2E4F84;
-  --navy-600: #1B3A6B;   /* primary */
-  --navy-700: #163057;
-  --navy-800: #112444;
-  --navy-900: #0C1A33;
+  /* ---- Brand: Clay/Terrakotta (primary) ---- */
+  --clay-50:  #FBF0EA;
+  --clay-100: #F6DCCE;
+  --clay-200: #EDBB9E;
+  --clay-300: #E0976E;
+  --clay-400: #D07C4E;
+  --clay-500: #C2673D;
+  --clay-600: #B2532D;   /* primary */
+  --clay-700: #8F4123;
+  --clay-800: #6B301A;
+  --clay-900: #34190D;
 
-  /* ---- Accent: Teal (deals / money / success) ---- */
-  --teal-50:  #E6F8F2;
-  --teal-100: #C5F0E2;
-  --teal-200: #8FE3C8;
-  --teal-300: #54D2AC;
-  --teal-400: #25BE92;
-  --teal-500: #16B486;   /* accent 1 */
-  --teal-600: #0E9A72;
-  --teal-700: #0B7A5B;
-  --teal-800: #095E47;
-  --teal-900: #064333;
+  /* ---- Accent: Sage/Salbei (deals / money / success, warm statt kühl) ---- */
+  --sage-50:  #F1F5E7;
+  --sage-100: #DEE9C6;
+  --sage-200: #C2D69A;
+  --sage-300: #A3BF6E;
+  --sage-400: #8AAB4F;
+  --sage-500: #6E9038;   /* accent 1 */
+  --sage-600: #587429;
+  --sage-700: #445A1F;
+  --sage-800: #314216;
+  --sage-900: #1D280C;
 
-  /* ---- Accent: Orange (energy / sport / CTA) ---- */
-  --orange-50:  #FFF1EB;
-  --orange-100: #FFDDCD;
-  --orange-200: #FFBE9F;
-  --orange-300: #FF9E70;
-  --orange-400: #FF8252;
-  --orange-500: #FF6B35;  /* accent 2 */
-  --orange-600: #ED5320;
-  --orange-700: #C53F12;
-  --orange-800: #9B3210;
-  --orange-900: #6E240C;
+  /* ---- Accent: Marigold (energy / CTA, sparsam) ---- */
+  --marigold-50:  #FFF3DE;
+  --marigold-100: #FEE2AE;
+  --marigold-200: #FDC96C;
+  --marigold-300: #F9AE3C;
+  --marigold-400: #F0961F;
+  --marigold-500: #DE7F11;  /* accent 2 */
+  --marigold-600: #B8660C;
+  --marigold-700: #8F4E0A;
+  --marigold-800: #663808;
+  --marigold-900: #3D2205;
 
-  /* ---- Neutral: cool slate ---- */
-  --gray-0:   #FFFFFF;
-  --gray-50:  #F7F9FC;
-  --gray-100: #EEF1F6;
-  --gray-200: #E1E6EE;
-  --gray-300: #CBD3DF;
-  --gray-400: #9AA6B8;
-  --gray-500: #6B7789;
-  --gray-600: #4D5868;
-  --gray-700: #38414E;
-  --gray-800: #232A34;
-  --gray-900: #141922;
-  --gray-950: #0B0E14;
+  /* ---- Neutral: warmer Sand/Taupe statt kühlem Blaugrau ---- */
+  --sand-0:   #FFFFFF;
+  --sand-50:  #FBF7F2;
+  --sand-100: #F4EDE3;
+  --sand-200: #E8DBC9;
+  --sand-300: #D6C2A6;
+  --sand-400: #B6A186;
+  --sand-500: #8F7A63;
+  --sand-600: #6B5A48;
+  --sand-700: #4F4234;
+  --sand-800: #362D23;
+  --sand-900: #201A14;
+  --sand-950: #14100C;
 
-  /* ---- Status raw ---- */
-  --amber-500: #F5A623;
-  --amber-100: #FCEFCF;
-  --red-500:   #E5484D;
-  --red-100:   #FBDDDE;
-  --blue-500:  #3B82F6;
-  --blue-100:  #DBE9FE;
+  /* ---- Status raw (leicht wärmer gestimmt) ---- */
+  --amber-500: #E8A020;
+  --amber-100: #FBEBCC;
+  --red-500:   #D6543F;
+  --red-100:   #FBE0D8;
+  --blue-500:  #4C8CDB;
+  --blue-100:  #DFEAFA;
 
   /* ---- Typography scale ---- */
   --text-display: var(--font-display);
@@ -136,14 +136,14 @@
   --container-sm: 760px;
   --gutter:       clamp(1rem, 4vw, 2.5rem);
 
-  /* ---- Elevation & focus (navy-getönt, kein hartes Schwarz) ---- */
-  --shadow-xs:  0 1px 2px rgba(12, 26, 51, 0.06);
-  --shadow-sm:  0 1px 3px rgba(12, 26, 51, 0.08), 0 1px 2px rgba(12, 26, 51, 0.04);
-  --shadow-md:  0 4px 12px rgba(12, 26, 51, 0.08), 0 2px 4px rgba(12, 26, 51, 0.05);
-  --shadow-lg:  0 12px 28px rgba(12, 26, 51, 0.12), 0 4px 8px rgba(12, 26, 51, 0.06);
-  --shadow-xl:  0 24px 56px rgba(12, 26, 51, 0.16), 0 8px 16px rgba(12, 26, 51, 0.08);
-  --shadow-brand: 0 8px 20px color-mix(in srgb, var(--navy-600) 28%, transparent);
-  --shadow-energy: 0 8px 20px color-mix(in srgb, var(--orange-500) 32%, transparent);
+  /* ---- Elevation & focus (warm umber-getönt statt navy-getönt) ---- */
+  --shadow-xs:  0 1px 2px rgba(52, 25, 13, 0.07);
+  --shadow-sm:  0 1px 3px rgba(52, 25, 13, 0.09), 0 1px 2px rgba(52, 25, 13, 0.05);
+  --shadow-md:  0 4px 12px rgba(52, 25, 13, 0.1), 0 2px 4px rgba(52, 25, 13, 0.06);
+  --shadow-lg:  0 12px 28px rgba(52, 25, 13, 0.14), 0 4px 8px rgba(52, 25, 13, 0.07);
+  --shadow-xl:  0 24px 56px rgba(52, 25, 13, 0.18), 0 8px 16px rgba(52, 25, 13, 0.09);
+  --shadow-brand: 0 8px 20px color-mix(in srgb, var(--clay-600) 30%, transparent);
+  --shadow-energy: 0 8px 20px color-mix(in srgb, var(--marigold-500) 34%, transparent);
   --focus-ring: 0 0 0 3px var(--ring);
 
   /* ---- Motion: schnell & ruhig, keine Loops/Bounces ---- */
@@ -160,45 +160,45 @@
 :root {
   color-scheme: light;
 
-  --bg:            var(--gray-50);
-  --surface:       var(--gray-0);
-  --surface-2:     var(--gray-100);
-  --surface-3:     var(--gray-200);
-  --surface-inset: var(--gray-50);
-  --surface-brand: var(--navy-600);
-  --overlay:       rgba(12, 26, 51, 0.45);
+  --bg:            var(--sand-50);
+  --surface:       var(--sand-0);
+  --surface-2:     var(--sand-100);
+  --surface-3:     var(--sand-200);
+  --surface-inset: var(--sand-50);
+  --surface-brand: var(--clay-600);
+  --overlay:       rgba(52, 25, 13, 0.45);
 
-  --text:          var(--navy-900);
-  --text-muted:    var(--gray-500);
-  --text-subtle:   var(--gray-400);
-  --text-on-brand: var(--gray-0);
-  --text-link:     var(--navy-600);
+  --text:          var(--clay-900);
+  --text-muted:    var(--sand-600);
+  --text-subtle:   var(--sand-500);
+  --text-on-brand: var(--sand-0);
+  --text-link:     var(--clay-600);
 
-  --border:        var(--gray-200);
-  --border-strong: var(--gray-300);
-  --border-brand:  var(--navy-600);
-  --ring:          color-mix(in srgb, var(--navy-500) 45%, transparent);
+  --border:        var(--sand-200);
+  --border-strong: var(--sand-300);
+  --border-brand:  var(--clay-600);
+  --ring:          color-mix(in srgb, var(--clay-500) 45%, transparent);
 
-  --primary:        var(--navy-600);
-  --primary-hover:  var(--navy-700);
-  --primary-press:  var(--navy-800);
-  --primary-soft:   var(--navy-50);
-  --on-primary:     var(--gray-0);
+  --primary:        var(--clay-600);
+  --primary-hover:  var(--clay-700);
+  --primary-press:  var(--clay-800);
+  --primary-soft:   var(--clay-50);
+  --on-primary:     var(--sand-0);
 
-  --accent:         var(--teal-500);
-  --accent-hover:   var(--teal-600);
-  --accent-press:   var(--teal-700);
-  --accent-soft:    var(--teal-50);
-  --on-accent:      var(--gray-0);
+  --accent:         var(--sage-500);
+  --accent-hover:   var(--sage-600);
+  --accent-press:   var(--sage-700);
+  --accent-soft:    var(--sage-50);
+  --on-accent:      var(--sand-0);
 
-  --energy:         var(--orange-500);
-  --energy-hover:   var(--orange-600);
-  --energy-press:   var(--orange-700);
-  --energy-soft:    var(--orange-50);
-  --on-energy:      var(--gray-0);
+  --energy:         var(--marigold-500);
+  --energy-hover:   var(--marigold-600);
+  --energy-press:   var(--marigold-700);
+  --energy-soft:    var(--marigold-50);
+  --on-energy:      var(--sand-0);
 
-  --success:      var(--teal-600);
-  --success-soft: var(--teal-50);
+  --success:      var(--sage-600);
+  --success-soft: var(--sage-50);
   --warning:      var(--amber-500);
   --warning-soft: var(--amber-100);
   --danger:       var(--red-500);
@@ -206,9 +206,9 @@
   --info:         var(--blue-500);
   --info-soft:    var(--blue-100);
 
-  --verified:      var(--teal-500);
+  --verified:      var(--sage-500);
   --rating-star:   var(--amber-500);
-  --secure:        var(--teal-600);
+  --secure:        var(--sage-600);
 }
 
 /* =====================================================================
@@ -218,55 +218,55 @@
 .dark {
   color-scheme: dark;
 
-  --bg:            var(--gray-950);
-  --surface:       #11161F;
-  --surface-2:     #171E29;
-  --surface-3:     #212A37;
-  --surface-inset: #0E131B;
-  --surface-brand: var(--navy-700);
+  --bg:            var(--sand-950);
+  --surface:       #1D1712;
+  --surface-2:     #251C15;
+  --surface-3:     #30251B;
+  --surface-inset: #170F0A;
+  --surface-brand: var(--clay-700);
   --overlay:       rgba(0, 0, 0, 0.6);
 
-  --text:          #EAF0F8;
-  --text-muted:    #94A1B5;
-  --text-subtle:   #6B7789;
-  --text-on-brand: var(--gray-0);
-  --text-link:     var(--navy-200);
+  --text:          #F6ECE1;
+  --text-muted:    #BDA88E;
+  --text-subtle:   #8F7A63;
+  --text-on-brand: var(--sand-0);
+  --text-link:     var(--clay-300);
 
-  --border:        #273140;
-  --border-strong: #344155;
-  --border-brand:  var(--navy-300);
-  --ring:          color-mix(in srgb, var(--navy-300) 55%, transparent);
+  --border:        #3A2C20;
+  --border-strong: #4C3A29;
+  --border-brand:  var(--clay-300);
+  --ring:          color-mix(in srgb, var(--clay-300) 55%, transparent);
 
-  --primary:        var(--navy-300);
-  --primary-hover:  var(--navy-200);
-  --primary-press:  var(--navy-100);
-  --primary-soft:   color-mix(in srgb, var(--navy-400) 22%, transparent);
-  --on-primary:     var(--navy-900);
+  --primary:        var(--clay-300);
+  --primary-hover:  var(--clay-200);
+  --primary-press:  var(--clay-100);
+  --primary-soft:   color-mix(in srgb, var(--clay-400) 22%, transparent);
+  --on-primary:     var(--clay-900);
 
-  --accent:         var(--teal-400);
-  --accent-hover:   var(--teal-300);
-  --accent-press:   var(--teal-200);
-  --accent-soft:    color-mix(in srgb, var(--teal-500) 18%, transparent);
-  --on-accent:      var(--navy-900);
+  --accent:         var(--sage-300);
+  --accent-hover:   var(--sage-200);
+  --accent-press:   var(--sage-100);
+  --accent-soft:    color-mix(in srgb, var(--sage-500) 18%, transparent);
+  --on-accent:      var(--sage-900);
 
-  --energy:         var(--orange-400);
-  --energy-hover:   var(--orange-300);
-  --energy-press:   var(--orange-200);
-  --energy-soft:    color-mix(in srgb, var(--orange-500) 18%, transparent);
-  --on-energy:      var(--navy-900);
+  --energy:         var(--marigold-300);
+  --energy-hover:   var(--marigold-200);
+  --energy-press:   var(--marigold-100);
+  --energy-soft:    color-mix(in srgb, var(--marigold-500) 18%, transparent);
+  --on-energy:      var(--marigold-900);
 
-  --success:      var(--teal-400);
-  --success-soft: color-mix(in srgb, var(--teal-500) 16%, transparent);
+  --success:      var(--sage-300);
+  --success-soft: color-mix(in srgb, var(--sage-500) 16%, transparent);
   --warning:      var(--amber-500);
   --warning-soft: color-mix(in srgb, var(--amber-500) 18%, transparent);
-  --danger:       #FF6166;
+  --danger:       #F17A63;
   --danger-soft:  color-mix(in srgb, var(--red-500) 22%, transparent);
-  --info:         #5C9BFF;
+  --info:         #7FB0EE;
   --info-soft:    color-mix(in srgb, var(--blue-500) 20%, transparent);
 
-  --verified:      var(--teal-400);
+  --verified:      var(--sage-300);
   --rating-star:   var(--amber-500);
-  --secure:        var(--teal-400);
+  --secure:        var(--sage-300);
 
   --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -274,5 +274,5 @@
   --shadow-lg:  0 12px 28px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.4);
   --shadow-xl:  0 24px 56px rgba(0, 0, 0, 0.7), 0 8px 16px rgba(0, 0, 0, 0.5);
   --shadow-brand: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-energy: 0 8px 22px color-mix(in srgb, var(--orange-500) 30%, transparent);
+  --shadow-energy: 0 8px 22px color-mix(in srgb, var(--marigold-500) 30%, transparent);
 }

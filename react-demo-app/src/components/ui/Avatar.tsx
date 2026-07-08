@@ -43,8 +43,8 @@ export function Avatar({
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          background: src ? "var(--surface-2)" : "var(--navy-100)",
-          color: "var(--navy-600)",
+          background: src ? "var(--surface-2)" : "var(--clay-100)",
+          color: "var(--clay-600)",
           fontFamily: "var(--font-display)",
           fontWeight: 800,
           fontSize: dim * 0.38,
@@ -100,7 +100,7 @@ export function Avatar({
             borderRadius: "50%",
             border: "2px solid var(--surface)",
             background:
-              status === "online" ? "var(--success)" : status === "busy" ? "var(--warning)" : "var(--gray-400)",
+              status === "online" ? "var(--success)" : status === "busy" ? "var(--warning)" : "var(--sand-400)",
           }}
         />
       )}

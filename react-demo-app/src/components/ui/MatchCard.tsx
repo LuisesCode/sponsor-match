@@ -81,7 +81,7 @@ export function MatchCard({
           height: 96,
           background: coverSrc
             ? `center/cover no-repeat url(${coverSrc})`
-            : "linear-gradient(120deg, var(--navy-600), var(--teal-600))",
+            : "linear-gradient(120deg, var(--clay-600), var(--sage-600))",
         }}
       >
         {matchScore != null && (

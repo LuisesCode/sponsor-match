@@ -1,5 +1,6 @@
 import { createHashRouter } from "react-router-dom";
 import Home from "../pages/Home";
+import Entdecken from "../pages/Entdecken";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Onboarding from "../pages/Onboarding";
@@ -26,6 +27,7 @@ import { AppShell } from "@/components/app/AppShell";
  */
 export const router = createHashRouter([
   { path: "/", element: <Home /> },
+  { path: "/entdecken", element: <Entdecken /> },
   { path: "/login", element: <Login /> },
   { path: "/registrieren", element: <Register /> },
   {

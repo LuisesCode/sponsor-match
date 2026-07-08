@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Badge } from "@/components/ui/Badge";
@@ -18,12 +18,20 @@ import { Logo } from "./Logo";
 /* ---------------------------------------------------------------- Nav */
 export function SiteNav({ onToggleTheme }: { onToggleTheme: () => void }) {
   const navigate = useNavigate();
-  const links: [string, string][] = [
-    ["#how-it-works", "So funktioniert’s"],
-    ["#dual-cta", "Für Sponsoren"],
-    ["#dual-cta", "Für Creator"],
-    ["#", "Preise"],
-  ];
+  const location = useLocation();
+
+  // HashRouter besitzt den URL-Hash für's Routing (#/pfad) — ein normaler
+  // Anker-Link (href="#how-it-works") würde den Router auf eine ungültige
+  // Route springen lassen. Stattdessen scrollen wir per JS bzw. navigieren
+  // erst zur Startseite und scrollen danach (siehe LandingPage-Effect).
+  function goToHowItWorks() {
+    if (location.pathname === "/") {
+      document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/", { state: { scrollTo: "how-it-works" } });
+    }
+  }
+
   return (
     <header
       style={{
@@ -52,11 +60,16 @@ export function SiteNav({ onToggleTheme }: { onToggleTheme: () => void }) {
           <Logo tone="white" className="fk-dark-only" />
         </Link>
         <nav style={{ display: "flex", gap: 22, marginLeft: 12 }} className="fk-navlinks">
-          {links.map(([href, label], i) => (
-            <a key={`${href}-${i}`} href={href} style={{ fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-muted)", textDecoration: "none" }}>
-              {label}
-            </a>
-          ))}
+          <button
+            type="button"
+            onClick={goToHowItWorks}
+            style={{ fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-muted)", background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "inherit" }}
+          >
+            So funktioniert’s
+          </button>
+          <Link to="/entdecken" style={{ fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-muted)", textDecoration: "none" }}>
+            Entdecken
+          </Link>
         </nav>
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
           <button
@@ -197,16 +210,48 @@ export function Hero() {
 /* ---------------------------------------------------------------- How it works */
 export function HowItWorks() {
   const steps = [
-    { icon: "user-plus", t: "Profil erstellen", d: "Sportler & Creator zeigen Reichweite, Kategorie und Mediakit. Marken hinterlegen Ziele und Budget." },
-    { icon: "search", t: "Matchen & verhandeln", d: "Intelligente Vorschläge bringen passende Partner zusammen. Konditionen direkt im Chat klären." },
-    { icon: "shield-check", t: "Sicher abschließen", d: "Vertrag in-app signieren, Zahlung im Escrow. Geld fließt erst nach beidseitiger Freigabe." },
+    {
+      icon: "user-plus",
+      t: "Registrieren & Profil anlegen",
+      d: "Sportler, Vereine & Creator zeigen Reichweite, Kategorie und Mediakit. Marken hinterlegen Branche, Ziele und Budget.",
+    },
+    {
+      icon: "search",
+      t: "Entdecken & matchen",
+      d: "Der Matching-Algorithmus schlägt passende Partner vor — oder man stöbert frei im Entdecken-Bereich.",
+    },
+    {
+      icon: "message-circle",
+      t: "Chatten & verhandeln",
+      d: "Direkt im Chat Konditionen klären, dann ein Angebot vorschlagen oder ein Gegenangebot machen.",
+    },
+    {
+      icon: "file-check-2",
+      t: "Vertrag & Escrow",
+      d: "Der Vertrag entsteht automatisch aus den Konditionen. Die Zahlung liegt sicher im Escrow, bis beide zustimmen.",
+    },
+    {
+      icon: "shield-check",
+      t: "Gemeinsam umsetzen",
+      d: "Meilenstein für Meilenstein wird die Zusammenarbeit freigegeben — die Auszahlung folgt erst nach Freigabe.",
+    },
+    {
+      icon: "handshake",
+      t: "Langfristige Partnerschaft",
+      d: "Nach dem Abschluss bewerten sich beide Seiten und starten bei Bedarf direkt den nächsten Deal miteinander.",
+    },
   ];
   return (
     <section id="how-it-works" style={{ background: "var(--surface)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
       <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "88px var(--gutter)" }}>
-        <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto 56px" }}>
+        <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 56px" }}>
           <div className="fk-eyebrow">So funktioniert&rsquo;s</div>
-          <h2 style={{ fontSize: "var(--fs-display-lg)", marginTop: 12, color: "var(--text)" }}>In drei Schritten zum Deal</h2>
+          <h2 style={{ fontSize: "var(--fs-display-lg)", marginTop: 12, color: "var(--text)" }}>
+            Von der Anmeldung bis zur langfristigen Partnerschaft
+          </h2>
+          <p style={{ marginTop: 12, color: "var(--text-muted)", lineHeight: 1.6 }}>
+            Ein durchgängiger Weg für beide Seiten — vom ersten Profil bis zur wiederkehrenden Zusammenarbeit.
+          </p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }} className="fk-3col">
           {steps.map((s, i) => (
@@ -233,6 +278,42 @@ export function HowItWorks() {
               <p style={{ color: "var(--text-muted)", lineHeight: 1.6, margin: 0 }}>{s.d}</p>
             </div>
           ))}
+        </div>
+        <div
+          style={{
+            marginTop: 48,
+            padding: "var(--space-6)",
+            borderRadius: "var(--radius-xl)",
+            background: "var(--surface-2)",
+            border: "1px solid var(--border)",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 16,
+            maxWidth: 760,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <span
+            style={{
+              width: 40,
+              height: 40,
+              flexShrink: 0,
+              borderRadius: "var(--radius-md)",
+              background: "var(--accent-soft)",
+              color: "var(--accent-press)",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name="percent" size={20} />
+          </span>
+          <p style={{ margin: 0, color: "var(--text-muted)", lineHeight: 1.6 }}>
+            <strong style={{ color: "var(--text)" }}>Flenzko verdient über eine transparente Provision</strong> auf
+            jeden erfolgreich abgeschlossenen Deal — kein Abo, keine versteckten Kosten. Dafür gibt&rsquo;s
+            Matching, Vertragsvorlagen und Escrow-Sicherheit für beide Seiten.
+          </p>
         </div>
       </div>
     </section>

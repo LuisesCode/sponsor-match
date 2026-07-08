@@ -1,3 +1,5 @@
+import * as React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   SiteNav,
   Hero,
@@ -15,6 +17,20 @@ import {
  * Logo/Toggle-Icon wechseln rein per CSS — daher hier kein Theme-State nötig.
  */
 export function LandingPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Von einer anderen Seite kommend (z.B. /entdecken) wird per navigate-state
+  // signalisiert, wohin gescrollt werden soll — HashRouter erlaubt keine
+  // normalen URL-Anker fürs Scrollen (siehe SiteNav).
+  React.useEffect(() => {
+    const scrollTo = (location.state as { scrollTo?: string } | null)?.scrollTo;
+    if (!scrollTo) return;
+    document.getElementById(scrollTo)?.scrollIntoView({ behavior: "smooth" });
+    navigate(location.pathname, { replace: true, state: null });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state]);
+
   const toggleTheme = () => {
     const isDark = document.documentElement.dataset.theme === "dark";
     if (isDark) {

@@ -1,8 +1,11 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import * as React from "react";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Logo } from "@/components/marketing/Logo";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useSession } from "@/auth/SessionContext";
+import { getDb } from "@/db/client";
+import { getUnreadMessageCount } from "@/db/repositories/conversations";
 import type { ProfileRole } from "@/lib/types";
 
 const ROLE_LABELS: Record<ProfileRole, string> = {
@@ -23,6 +26,17 @@ const NAV_LINKS: [string, string][] = [
 export function AppShell() {
   const { profile, logout } = useSession();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [unreadCount, setUnreadCount] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!profile) return;
+    void (async () => {
+      const db = await getDb();
+      setUnreadCount(getUnreadMessageCount(db, profile.id));
+    })();
+    // Beim Wechsel der Route neu prüfen (z.B. nach Verlassen eines Chats).
+  }, [profile, location.pathname]);
 
   if (!profile) return null;
 
@@ -50,9 +64,14 @@ export function AppShell() {
               <Link
                 key={to}
                 to={to}
-                style={{ fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-muted)", textDecoration: "none" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)", fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-muted)", textDecoration: "none" }}
               >
                 {label}
+                {to === "/nachrichten" && unreadCount > 0 && (
+                  <Badge tone="energy" size="sm" aria-label={`${unreadCount} ungelesene Nachrichten`}>
+                    <span style={{ fontFamily: "var(--font-mono)" }}>{unreadCount}</span>
+                  </Badge>
+                )}
               </Link>
             ))}
           </nav>

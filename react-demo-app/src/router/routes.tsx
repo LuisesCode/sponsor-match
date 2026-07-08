@@ -11,6 +11,9 @@ import Suche from "../pages/Suche";
 import Profile from "../pages/Profile";
 import Nachrichten from "../pages/Nachrichten";
 import NachrichtenConversation from "../pages/NachrichtenConversation";
+import Deals from "../pages/Deals";
+import DealNew from "../pages/DealNew";
+import DealDetail from "../pages/DealDetail";
 import NotFound from "../pages/NotFound";
 import { RequireAuth } from "@/components/app/RequireAuth";
 import { AppShell } from "@/components/app/AppShell";
@@ -40,6 +43,9 @@ export const router = createHashRouter([
           { path: "/profil/:slug", element: <Profile /> },
           { path: "/nachrichten", element: <Nachrichten /> },
           { path: "/nachrichten/:conversationId", element: <NachrichtenConversation /> },
+          { path: "/deals", element: <Deals /> },
+          { path: "/deals/neu", element: <DealNew /> },
+          { path: "/deals/:id", element: <DealDetail /> },
         ],
       },
     ],

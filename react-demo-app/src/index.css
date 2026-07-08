@@ -1,37 +1,73 @@
+@import "./styles/tokens.css";
+
+/* Schriftvariablen: next/font (Original) ersetzt durch Google-Fonts-Links
+   in index.html + einfache CSS-Var-Zuordnung hier. */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
+  --font-display: "Archivo", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
 
-  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
-
-  font: 18px/145% var(--sans);
-  color-scheme: light dark;
+/* ---- Base element defaults (aus dem Flenzko-Design-System) ---- */
+body {
+  margin: 0;
+  font-family: var(--text-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
   color: var(--text);
   background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-  }
-}
-
-body {
+h1, h2, h3, h4, h5 {
+  font-family: var(--text-heading);
+  font-weight: var(--fw-extra);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-tight);
+  color: var(--text);
   margin: 0;
 }
 
-h1,
-h2 {
-  font-family: var(--sans);
-  font-weight: 500;
-  color: var(--text-h);
+a { color: var(--text-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+::selection { background: color-mix(in srgb, var(--accent) 30%, transparent); }
+
+/* Eyebrow / Overline */
+.fk-eyebrow {
+  font-family: var(--text-heading);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--accent);
 }
+
+/* ---- Responsive Layout-Helfer (mobile-first) ---- */
+.fk-hero-grid { grid-template-columns: 1fr !important; }
+.fk-3col { grid-template-columns: 1fr !important; }
+.fk-4col { grid-template-columns: repeat(2, 1fr) !important; }
+.fk-foot { grid-template-columns: 1fr 1fr !important; }
+.fk-navlinks { display: none !important; }
+.fk-hide-sm { display: none !important; }
+
+@media (min-width: 640px) {
+  .fk-hide-sm { display: inline-flex !important; }
+}
+
+@media (min-width: 768px) {
+  .fk-3col { grid-template-columns: repeat(3, 1fr) !important; }
+  .fk-4col { grid-template-columns: repeat(4, 1fr) !important; }
+  .fk-foot { grid-template-columns: 1.4fr 1fr 1fr 1fr !important; }
+}
+
+@media (min-width: 900px) {
+  .fk-hero-grid { grid-template-columns: 1.05fr 0.95fr !important; }
+  .fk-navlinks { display: flex !important; }
+}
+
+/* ---- Theme-abhängige Sichtbarkeit (Logo & Theme-Toggle-Icon) ---- */
+.fk-dark-only { display: none !important; }
+:root[data-theme="dark"] .fk-dark-only { display: inline-flex !important; }
+:root[data-theme="dark"] .fk-light-only { display: none !important; }

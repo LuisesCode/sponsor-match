@@ -1,10 +1,5 @@
-function Home() {
-  return (
-    <section>
-      <h1>Home</h1>
-      <p>Welcome to the React + TypeScript demo app.</p>
-    </section>
-  );
-}
+import { LandingPage } from "@/components/marketing/LandingPage";
 
-export default Home;
+export default function Home() {
+  return <LandingPage />;
+}

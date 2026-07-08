@@ -1,0 +1,278 @@
+/* =====================================================================
+   Flenzko — Design Tokens
+   Quelle: Flenzko Design System (Claude-Design-Handoff, Juni 2026)
+   Primär: Navy (Vertrauen) · Akzent 1: Teal (Deals/Escrow) · Akzent 2: Orange (Energie)
+   Schriftvariablen (--font-display/--font-body/--font-mono) kommen aus index.css (Google Fonts).
+   ===================================================================== */
+
+:root {
+  /* ---- Brand: Navy (primary) ---- */
+  --navy-50:  #EEF2F8;
+  --navy-100: #D9E2F0;
+  --navy-200: #B3C4DF;
+  --navy-300: #7F9AC4;
+  --navy-400: #4E6FA3;
+  --navy-500: #2E4F84;
+  --navy-600: #1B3A6B;   /* primary */
+  --navy-700: #163057;
+  --navy-800: #112444;
+  --navy-900: #0C1A33;
+
+  /* ---- Accent: Teal (deals / money / success) ---- */
+  --teal-50:  #E6F8F2;
+  --teal-100: #C5F0E2;
+  --teal-200: #8FE3C8;
+  --teal-300: #54D2AC;
+  --teal-400: #25BE92;
+  --teal-500: #16B486;   /* accent 1 */
+  --teal-600: #0E9A72;
+  --teal-700: #0B7A5B;
+  --teal-800: #095E47;
+  --teal-900: #064333;
+
+  /* ---- Accent: Orange (energy / sport / CTA) ---- */
+  --orange-50:  #FFF1EB;
+  --orange-100: #FFDDCD;
+  --orange-200: #FFBE9F;
+  --orange-300: #FF9E70;
+  --orange-400: #FF8252;
+  --orange-500: #FF6B35;  /* accent 2 */
+  --orange-600: #ED5320;
+  --orange-700: #C53F12;
+  --orange-800: #9B3210;
+  --orange-900: #6E240C;
+
+  /* ---- Neutral: cool slate ---- */
+  --gray-0:   #FFFFFF;
+  --gray-50:  #F7F9FC;
+  --gray-100: #EEF1F6;
+  --gray-200: #E1E6EE;
+  --gray-300: #CBD3DF;
+  --gray-400: #9AA6B8;
+  --gray-500: #6B7789;
+  --gray-600: #4D5868;
+  --gray-700: #38414E;
+  --gray-800: #232A34;
+  --gray-900: #141922;
+  --gray-950: #0B0E14;
+
+  /* ---- Status raw ---- */
+  --amber-500: #F5A623;
+  --amber-100: #FCEFCF;
+  --red-500:   #E5484D;
+  --red-100:   #FBDDDE;
+  --blue-500:  #3B82F6;
+  --blue-100:  #DBE9FE;
+
+  /* ---- Typography scale ---- */
+  --text-display: var(--font-display);
+  --text-heading: var(--font-display);
+  --text-body:    var(--font-body);
+  --text-code:    var(--font-mono);
+
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+  --fw-extra:    800;
+  --fw-black:    900;
+
+  --fs-display-2xl: clamp(2.75rem, 1.6rem + 5.2vw, 5rem);
+  --fs-display-xl:  clamp(2.25rem, 1.4rem + 3.8vw, 3.75rem);
+  --fs-display-lg:  clamp(1.875rem, 1.3rem + 2.6vw, 3rem);
+
+  --fs-h1: 2.25rem;
+  --fs-h2: 1.75rem;
+  --fs-h3: 1.375rem;
+  --fs-h4: 1.125rem;
+
+  --fs-lg:   1.125rem;
+  --fs-base: 1rem;
+  --fs-sm:   0.875rem;
+  --fs-xs:   0.75rem;
+  --fs-2xs:  0.6875rem;
+
+  --lh-tight:   1.05;
+  --lh-snug:    1.18;
+  --lh-heading: 1.25;
+  --lh-normal:  1.55;
+  --lh-relaxed: 1.7;
+
+  --ls-tighter: -0.03em;
+  --ls-tight:   -0.015em;
+  --ls-normal:  0;
+  --ls-wide:    0.04em;
+  --ls-wider:   0.12em;
+
+  /* ---- Spacing, radii, sizing (Basis 4px) ---- */
+  --space-0:  0;
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-2xl:  28px;
+  --radius-pill: 999px;
+
+  --control-sm: 2rem;
+  --control-md: 2.625rem;
+  --control-lg: 3rem;
+
+  --container:    1200px;
+  --container-sm: 760px;
+  --gutter:       clamp(1rem, 4vw, 2.5rem);
+
+  /* ---- Elevation & focus (navy-getönt, kein hartes Schwarz) ---- */
+  --shadow-xs:  0 1px 2px rgba(12, 26, 51, 0.06);
+  --shadow-sm:  0 1px 3px rgba(12, 26, 51, 0.08), 0 1px 2px rgba(12, 26, 51, 0.04);
+  --shadow-md:  0 4px 12px rgba(12, 26, 51, 0.08), 0 2px 4px rgba(12, 26, 51, 0.05);
+  --shadow-lg:  0 12px 28px rgba(12, 26, 51, 0.12), 0 4px 8px rgba(12, 26, 51, 0.06);
+  --shadow-xl:  0 24px 56px rgba(12, 26, 51, 0.16), 0 8px 16px rgba(12, 26, 51, 0.08);
+  --shadow-brand: 0 8px 20px color-mix(in srgb, var(--navy-600) 28%, transparent);
+  --shadow-energy: 0 8px 20px color-mix(in srgb, var(--orange-500) 32%, transparent);
+  --focus-ring: 0 0 0 3px var(--ring);
+
+  /* ---- Motion: schnell & ruhig, keine Loops/Bounces ---- */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:  120ms;
+  --dur-med:   200ms;
+  --dur-slow:  320ms;
+}
+
+/* =====================================================================
+   SEMANTIC ALIASES — Light (default)
+   ===================================================================== */
+:root {
+  color-scheme: light;
+
+  --bg:            var(--gray-50);
+  --surface:       var(--gray-0);
+  --surface-2:     var(--gray-100);
+  --surface-3:     var(--gray-200);
+  --surface-inset: var(--gray-50);
+  --surface-brand: var(--navy-600);
+  --overlay:       rgba(12, 26, 51, 0.45);
+
+  --text:          var(--navy-900);
+  --text-muted:    var(--gray-500);
+  --text-subtle:   var(--gray-400);
+  --text-on-brand: var(--gray-0);
+  --text-link:     var(--navy-600);
+
+  --border:        var(--gray-200);
+  --border-strong: var(--gray-300);
+  --border-brand:  var(--navy-600);
+  --ring:          color-mix(in srgb, var(--navy-500) 45%, transparent);
+
+  --primary:        var(--navy-600);
+  --primary-hover:  var(--navy-700);
+  --primary-press:  var(--navy-800);
+  --primary-soft:   var(--navy-50);
+  --on-primary:     var(--gray-0);
+
+  --accent:         var(--teal-500);
+  --accent-hover:   var(--teal-600);
+  --accent-press:   var(--teal-700);
+  --accent-soft:    var(--teal-50);
+  --on-accent:      var(--gray-0);
+
+  --energy:         var(--orange-500);
+  --energy-hover:   var(--orange-600);
+  --energy-press:   var(--orange-700);
+  --energy-soft:    var(--orange-50);
+  --on-energy:      var(--gray-0);
+
+  --success:      var(--teal-600);
+  --success-soft: var(--teal-50);
+  --warning:      var(--amber-500);
+  --warning-soft: var(--amber-100);
+  --danger:       var(--red-500);
+  --danger-soft:  var(--red-100);
+  --info:         var(--blue-500);
+  --info-soft:    var(--blue-100);
+
+  --verified:      var(--teal-500);
+  --rating-star:   var(--amber-500);
+  --secure:        var(--teal-600);
+}
+
+/* =====================================================================
+   SEMANTIC ALIASES — Dark (data-theme="dark" oder .dark auf Vorfahre)
+   ===================================================================== */
+:root[data-theme="dark"],
+.dark {
+  color-scheme: dark;
+
+  --bg:            var(--gray-950);
+  --surface:       #11161F;
+  --surface-2:     #171E29;
+  --surface-3:     #212A37;
+  --surface-inset: #0E131B;
+  --surface-brand: var(--navy-700);
+  --overlay:       rgba(0, 0, 0, 0.6);
+
+  --text:          #EAF0F8;
+  --text-muted:    #94A1B5;
+  --text-subtle:   #6B7789;
+  --text-on-brand: var(--gray-0);
+  --text-link:     var(--navy-200);
+
+  --border:        #273140;
+  --border-strong: #344155;
+  --border-brand:  var(--navy-300);
+  --ring:          color-mix(in srgb, var(--navy-300) 55%, transparent);
+
+  --primary:        var(--navy-300);
+  --primary-hover:  var(--navy-200);
+  --primary-press:  var(--navy-100);
+  --primary-soft:   color-mix(in srgb, var(--navy-400) 22%, transparent);
+  --on-primary:     var(--navy-900);
+
+  --accent:         var(--teal-400);
+  --accent-hover:   var(--teal-300);
+  --accent-press:   var(--teal-200);
+  --accent-soft:    color-mix(in srgb, var(--teal-500) 18%, transparent);
+  --on-accent:      var(--navy-900);
+
+  --energy:         var(--orange-400);
+  --energy-hover:   var(--orange-300);
+  --energy-press:   var(--orange-200);
+  --energy-soft:    color-mix(in srgb, var(--orange-500) 18%, transparent);
+  --on-energy:      var(--navy-900);
+
+  --success:      var(--teal-400);
+  --success-soft: color-mix(in srgb, var(--teal-500) 16%, transparent);
+  --warning:      var(--amber-500);
+  --warning-soft: color-mix(in srgb, var(--amber-500) 18%, transparent);
+  --danger:       #FF6166;
+  --danger-soft:  color-mix(in srgb, var(--red-500) 22%, transparent);
+  --info:         #5C9BFF;
+  --info-soft:    color-mix(in srgb, var(--blue-500) 20%, transparent);
+
+  --verified:      var(--teal-400);
+  --rating-star:   var(--amber-500);
+  --secure:        var(--teal-400);
+
+  --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.35);
+  --shadow-lg:  0 12px 28px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-xl:  0 24px 56px rgba(0, 0, 0, 0.7), 0 8px 16px rgba(0, 0, 0, 0.5);
+  --shadow-brand: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-energy: 0 8px 22px color-mix(in srgb, var(--orange-500) 30%, transparent);
+}

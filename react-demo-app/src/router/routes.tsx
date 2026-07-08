@@ -1,19 +1,14 @@
-import { createBrowserRouter } from "react-router-dom";
-import Layout from "../components/Layout";
+import { createHashRouter } from "react-router-dom";
 import Home from "../pages/Home";
-import About from "../pages/About";
-import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      { index: true, element: <Home /> },
-      { path: "about", element: <About /> },
-      { path: "contact", element: <Contact /> },
-      { path: "*", element: <NotFound /> },
-    ],
-  },
+/**
+ * HashRouter (createHashRouter) statt BrowserRouter: GitHub Pages liefert nur
+ * statische Dateien aus und kann Deep-Links wie /deals/123 ohne serverseitiges
+ * Rewrite nicht auf index.html zurückführen. Mit Hash-Routing (#/deals/123)
+ * bleibt jede Route auch nach Reload/Direktaufruf erreichbar.
+ */
+export const router = createHashRouter([
+  { path: "/", element: <Home /> },
+  { path: "*", element: <NotFound /> },
 ]);

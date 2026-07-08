@@ -1,6 +1,12 @@
 import { createHashRouter } from "react-router-dom";
 import Home from "../pages/Home";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+import Onboarding from "../pages/Onboarding";
+import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
+import { RequireAuth } from "@/components/app/RequireAuth";
+import { AppShell } from "@/components/app/AppShell";
 
 /**
  * HashRouter (createHashRouter) statt BrowserRouter: GitHub Pages liefert nur
@@ -10,5 +16,19 @@ import NotFound from "../pages/NotFound";
  */
 export const router = createHashRouter([
   { path: "/", element: <Home /> },
+  { path: "/login", element: <Login /> },
+  { path: "/registrieren", element: <Register /> },
+  {
+    element: <RequireAuth />,
+    children: [
+      {
+        element: <AppShell />,
+        children: [
+          { path: "/onboarding", element: <Onboarding /> },
+          { path: "/dashboard", element: <Dashboard /> },
+        ],
+      },
+    ],
+  },
   { path: "*", element: <NotFound /> },
 ]);

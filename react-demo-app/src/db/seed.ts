@@ -51,9 +51,11 @@ const CATEGORIES: { name: string; slug: string; kind: "sport" | "industry" | "cr
 ];
 
 export function seedDatabase(db: Database): void {
+  // Echte UUIDs als id (nicht der Slug): lib/validation/onboarding.ts erwartet
+  // z.uuid() für industryId/categoryId — 1:1 aus dem Original übernommen.
   for (const c of CATEGORIES) {
     db.run("insert into categories (id, name, slug, kind) values (?, ?, ?, ?)", [
-      c.slug,
+      crypto.randomUUID(),
       c.name,
       c.slug,
       c.kind,

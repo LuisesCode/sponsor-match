@@ -9,6 +9,10 @@ export default defineConfig({
   // Ziel-Repo feststeht, bleibt base "/"; vor dem Deploy (siehe PLAN/Phase 8)
   // auf "/<repo-name>/" setzen, z.B. via Umgebungsvariable im CI-Workflow.
   base: process.env.VITE_BASE_PATH ?? '/',
+  server: {
+    port: process.env.PORT ? Number(process.env.PORT) : 5173,
+    strictPort: false,
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

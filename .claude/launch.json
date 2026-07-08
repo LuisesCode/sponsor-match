@@ -11,7 +11,8 @@
       "name": "react-demo-app-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "react-demo-app"],
-      "port": 5173
+      "port": 5173,
+      "autoPort": true
     }
   ]
 }

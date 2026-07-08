@@ -1,3 +1,4 @@
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Badge } from "@/components/ui/Badge";
@@ -16,7 +17,13 @@ import { Logo } from "./Logo";
 
 /* ---------------------------------------------------------------- Nav */
 export function SiteNav({ onToggleTheme }: { onToggleTheme: () => void }) {
-  const links = ["So funktioniert’s", "Für Sponsoren", "Für Creator", "Preise"];
+  const navigate = useNavigate();
+  const links: [string, string][] = [
+    ["#how-it-works", "So funktioniert’s"],
+    ["#dual-cta", "Für Sponsoren"],
+    ["#dual-cta", "Für Creator"],
+    ["#", "Preise"],
+  ];
   return (
     <header
       style={{
@@ -39,15 +46,15 @@ export function SiteNav({ onToggleTheme }: { onToggleTheme: () => void }) {
           gap: 28,
         }}
       >
-        <a href="#" style={{ display: "inline-flex", alignItems: "center" }}>
+        <Link to="/" style={{ display: "inline-flex", alignItems: "center" }}>
           {/* Logo-Ton wird per CSS-Theme umgeschaltet (inline SVG, kein Asset-Pfad nötig) */}
           <Logo tone="navy" className="fk-light-only" />
           <Logo tone="white" className="fk-dark-only" />
-        </a>
+        </Link>
         <nav style={{ display: "flex", gap: 22, marginLeft: 12 }} className="fk-navlinks">
-          {links.map((l) => (
-            <a key={l} href="#" style={{ fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-muted)", textDecoration: "none" }}>
-              {l}
+          {links.map(([href, label], i) => (
+            <a key={`${href}-${i}`} href={href} style={{ fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-muted)", textDecoration: "none" }}>
+              {label}
             </a>
           ))}
         </nav>
@@ -71,10 +78,10 @@ export function SiteNav({ onToggleTheme }: { onToggleTheme: () => void }) {
             <Icon name="moon" size={18} className="fk-light-only" />
             <Icon name="sun" size={18} className="fk-dark-only" />
           </button>
-          <Button variant="ghost" size="sm" className="fk-hide-sm">
+          <Button variant="ghost" size="sm" className="fk-hide-sm" onClick={() => navigate("/login")}>
             Anmelden
           </Button>
-          <Button variant="primary" size="sm">
+          <Button variant="primary" size="sm" onClick={() => navigate("/registrieren")}>
             Kostenlos starten
           </Button>
         </div>
@@ -85,6 +92,7 @@ export function SiteNav({ onToggleTheme }: { onToggleTheme: () => void }) {
 
 /* ---------------------------------------------------------------- Hero */
 export function Hero() {
+  const navigate = useNavigate();
   return (
     <section style={{ position: "relative", overflow: "hidden" }}>
       <div
@@ -110,10 +118,10 @@ export function Hero() {
             Verifizierte Sportler, Vereine & Creator treffen auf Marken mit Budget — sicher abgewickelt per Escrow, Verträge inklusive.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Button variant="primary" size="lg" iconRight={<Icon name="search" size={18} />}>
+            <Button variant="primary" size="lg" iconRight={<Icon name="search" size={18} />} onClick={() => navigate("/registrieren")}>
               Talente entdecken
             </Button>
-            <Button variant="energy" size="lg">
+            <Button variant="energy" size="lg" onClick={() => navigate("/registrieren")}>
               Als Creator starten
             </Button>
           </div>
@@ -194,7 +202,7 @@ export function HowItWorks() {
     { icon: "shield-check", t: "Sicher abschließen", d: "Vertrag in-app signieren, Zahlung im Escrow. Geld fließt erst nach beidseitiger Freigabe." },
   ];
   return (
-    <section style={{ background: "var(--surface)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
+    <section id="how-it-works" style={{ background: "var(--surface)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
       <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "88px var(--gutter)" }}>
         <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto 56px" }}>
           <div className="fk-eyebrow">So funktioniert&rsquo;s</div>
@@ -312,6 +320,7 @@ function CtaPanel({
   points,
   cta,
   ctaVariant,
+  onCta,
 }: {
   tone: "sponsor" | "creator";
   eyebrow: string;
@@ -319,6 +328,7 @@ function CtaPanel({
   points: string[];
   cta: string;
   ctaVariant: "energy" | "primary";
+  onCta: () => void;
 }) {
   return (
     <div
@@ -357,7 +367,7 @@ function CtaPanel({
           </li>
         ))}
       </ul>
-      <Button variant={ctaVariant} size="lg" fullWidth>
+      <Button variant={ctaVariant} size="lg" fullWidth onClick={onCta}>
         {cta}
       </Button>
     </div>
@@ -365,8 +375,9 @@ function CtaPanel({
 }
 
 export function DualCTA() {
+  const navigate = useNavigate();
   return (
-    <section style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "88px var(--gutter)" }}>
+    <section id="dual-cta" style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "88px var(--gutter)" }}>
       <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
         <CtaPanel
           tone="sponsor"
@@ -374,6 +385,7 @@ export function DualCTA() {
           title="Erreiche die richtige Zielgruppe"
           cta="Talente entdecken"
           ctaVariant="energy"
+          onCta={() => navigate("/registrieren")}
           points={[
             "Verifizierte Profile mit echten Reichweiten",
             "Filter nach Kategorie, Region & Budget",
@@ -386,6 +398,7 @@ export function DualCTA() {
           title="Verdiene mit dem, was du liebst"
           cta="Profil kostenlos erstellen"
           ctaVariant="primary"
+          onCta={() => navigate("/registrieren")}
           points={[
             "Kostenloses Profil mit Mediakit",
             "Faire Konditionen, pünktliche Auszahlung",

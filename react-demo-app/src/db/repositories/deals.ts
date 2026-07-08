@@ -12,15 +12,20 @@ import type {
 } from "@/lib/types";
 import { DEAL_CLOSED_STATUSES, DEAL_TRANSITIONS } from "@/lib/deals/status";
 import { calcCommissionAmount } from "@/lib/deals/commission";
+import { createNotification } from "./notifications";
 
 /**
  * Spiegelt die Postgres-Funktionen der M5-Migration (create_deal,
  * counter_deal_offer, advance_deal_status, accept_contract) 1:1 als
  * TypeScript-Statusmaschine — hier gibt es keine SECURITY-DEFINER-Funktionen,
  * also übernimmt dieses Modul deren Prüfungen vor jedem Schreibzugriff.
- * Notifications werden bewusst nicht erzeugt (kein Notification-Center in
- * diesem Rebuild, siehe Plan).
+ * Jede Statusänderung benachrichtigt die Gegenseite über notifications
+ * (siehe db/repositories/notifications.ts, im UI: NotificationBell).
  */
+
+function counterpartOf(deal: Deal, viewerId: string): string {
+  return deal.sponsor_profile_id === viewerId ? deal.sponsee_profile_id : deal.sponsor_profile_id;
+}
 
 class DealError extends Error {}
 
@@ -164,6 +169,10 @@ export function createDeal(
     JSON.stringify(buildContractContent(db, dealId)),
   ]);
 
+  const counterpartId =
+    conversation.sponsor_profile_id === viewer.id ? conversation.sponsee_profile_id : conversation.sponsor_profile_id;
+  createNotification(db, counterpartId, "deal_proposed", { deal_id: dealId, actor_profile_id: viewer.id });
+
   return dealId;
 }
 
@@ -203,6 +212,10 @@ export function counterDealOffer(
     JSON.stringify(buildContractContent(db, input.dealId)),
     input.dealId,
   ]);
+  createNotification(db, counterpartOf(deal, viewer.id), "deal_countered", {
+    deal_id: input.dealId,
+    actor_profile_id: viewer.id,
+  });
 }
 
 /** Statuswechsel — 1:1 aus advance_deal_status(). */
@@ -249,6 +262,12 @@ export function advanceDealStatus(
     nowIso(),
     dealId,
   ]);
+  createNotification(db, counterpartOf(deal, viewer.id), "deal_status_changed", {
+    deal_id: dealId,
+    actor_profile_id: viewer.id,
+    old_status: deal.status,
+    new_status: newStatus,
+  });
 }
 
 /** Vertragszustimmung — 1:1 aus accept_contract(); löst bei beidseitiger Zustimmung 'agreed' aus. */
@@ -278,10 +297,15 @@ export function acceptContract(db: SqlDatabase, viewer: Profile, dealId: string)
   const updated = selectOne<Contract>(db, "select * from contracts where deal_id = ?", [dealId])!;
   if (updated.sponsor_accepted_at && updated.sponsee_accepted_at) {
     advanceDealStatus(db, viewer, dealId, "agreed");
+  } else {
+    createNotification(db, counterpartOf(deal, viewer.id), "contract_accepted", {
+      deal_id: dealId,
+      actor_profile_id: viewer.id,
+    });
   }
 }
 
-export type DealOverview = { deal: Deal; counterpart: Profile | null };
+export type DealOverview = { deal: Deal; counterpart: Profile | null; acceptedByMe: boolean };
 
 export function getDealOverviews(db: SqlDatabase, myProfileId: string): DealOverview[] {
   const deals = select<Deal>(
@@ -291,7 +315,15 @@ export function getDealOverviews(db: SqlDatabase, myProfileId: string): DealOver
   );
   return deals.map((deal) => {
     const counterpartId = deal.sponsor_profile_id === myProfileId ? deal.sponsee_profile_id : deal.sponsor_profile_id;
-    return { deal, counterpart: selectOne<Profile>(db, "select * from profiles where id = ?", [counterpartId]) };
+    const contract = selectOne<Contract>(db, "select * from contracts where deal_id = ?", [deal.id]);
+    const acceptedByMe = Boolean(
+      deal.sponsor_profile_id === myProfileId ? contract?.sponsor_accepted_at : contract?.sponsee_accepted_at
+    );
+    return {
+      deal,
+      counterpart: selectOne<Profile>(db, "select * from profiles where id = ?", [counterpartId]),
+      acceptedByMe,
+    };
   });
 }
 

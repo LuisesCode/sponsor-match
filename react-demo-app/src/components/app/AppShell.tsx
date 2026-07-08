@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Logo } from "@/components/marketing/Logo";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { NotificationBell } from "@/components/app/NotificationBell";
 import { useSession } from "@/auth/SessionContext";
 import { getDb } from "@/db/client";
 import { getUnreadMessageCount } from "@/db/repositories/conversations";
@@ -76,6 +77,7 @@ export function AppShell() {
             ))}
           </nav>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
+            <NotificationBell />
             <span className="fk-hide-sm" style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)", fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text)" }}>
               {profile.display_name}
               <Badge tone={profile.role === "sponsor" ? "primary" : "accent"} size="sm">

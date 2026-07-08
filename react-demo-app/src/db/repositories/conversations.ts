@@ -1,6 +1,7 @@
 import type { SqlDatabase } from "../client";
 import { select, selectOne, exec, newId, nowIso } from "../query";
 import type { Conversation, Message, Profile } from "@/lib/types";
+import { createNotification } from "./notifications";
 
 export type ConversationOverview = {
   conversation: Conversation;
@@ -128,6 +129,21 @@ export function sendMessage(
     now,
   ]);
   exec(db, "update conversations set updated_at = ? where id = ?", [now, conversationId]);
+
+  const conversation = selectOne<Conversation>(db, "select * from conversations where id = ?", [conversationId]);
+  if (conversation) {
+    const recipientId =
+      conversation.sponsor_profile_id === senderProfileId
+        ? conversation.sponsee_profile_id
+        : conversation.sponsor_profile_id;
+    createNotification(db, recipientId, "new_message", {
+      conversation_id: conversationId,
+      message_id: id,
+      sender_profile_id: senderProfileId,
+      actor_profile_id: senderProfileId,
+    });
+  }
+
   return selectOne<Message>(db, "select * from messages where id = ?", [id])!;
 }
 

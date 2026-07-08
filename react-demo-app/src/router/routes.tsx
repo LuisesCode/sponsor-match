@@ -4,6 +4,11 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Onboarding from "../pages/Onboarding";
 import Dashboard from "../pages/Dashboard";
+import Listings from "../pages/Listings";
+import ListingNew from "../pages/ListingNew";
+import ListingDetail from "../pages/ListingDetail";
+import Suche from "../pages/Suche";
+import Profile from "../pages/Profile";
 import NotFound from "../pages/NotFound";
 import { RequireAuth } from "@/components/app/RequireAuth";
 import { AppShell } from "@/components/app/AppShell";
@@ -26,6 +31,11 @@ export const router = createHashRouter([
         children: [
           { path: "/onboarding", element: <Onboarding /> },
           { path: "/dashboard", element: <Dashboard /> },
+          { path: "/suche", element: <Suche /> },
+          { path: "/listings", element: <Listings /> },
+          { path: "/listings/neu", element: <ListingNew /> },
+          { path: "/listings/:id", element: <ListingDetail /> },
+          { path: "/profil/:slug", element: <Profile /> },
         ],
       },
     ],

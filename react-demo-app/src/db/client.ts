@@ -36,7 +36,7 @@ async function initialize(): Promise<SqlDatabase> {
 
   const db = new SQL.Database();
   db.run(schemaSql);
-  seedDatabase(db);
+  await seedDatabase(db);
   await saveSnapshot(db.export());
   return db;
 }

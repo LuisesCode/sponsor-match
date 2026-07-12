@@ -1,7 +1,7 @@
 import type { SqlDatabase } from "./client";
 import { select, selectOne } from "./query";
 import { hashPassword } from "@/auth/password";
-import { completeSponsorOnboarding, completeSponseeOnboarding } from "./repositories/profiles";
+import { completeSponsorOnboarding, completeSponseeOnboarding, getProfileBySlug } from "./repositories/profiles";
 import { startConversation, sendMessage, markConversationRead } from "./repositories/conversations";
 import { createDeal, counterDealOffer, advanceDealStatus, acceptContract } from "./repositories/deals";
 import { createListing } from "./repositories/listings";
@@ -300,6 +300,140 @@ function sum(rows: DealMilestoneInput[]): number {
   return rows.reduce((s, m) => s + m.amount, 0);
 }
 
+type ListingSeed = {
+  authorSlug: string;
+  direction: "offering_sponsorship" | "seeking_sponsor";
+  title: string;
+  description: string;
+  categorySlug: string | null;
+  region: Region | null;
+  budgetMin: number | null;
+  budgetMax: number | null;
+  reachRequired: number | null;
+};
+
+const LISTINGS: ListingSeed[] = [
+  {
+    authorSlug: "nordsport-trikot-gmbh",
+    direction: "offering_sponsorship",
+    title: "Trikotsponsoring für Amateurvereine gesucht",
+    description: "Wir stellen Trikots & Bandenwerbung für 1-2 Vereine im Fußball- oder Handballbereich in Norddeutschland — inkl. Logo-Platzierung und Social-Media-Erwähnung.",
+    categorySlug: "fussball",
+    region: "hamburg",
+    budgetMin: 200000,
+    budgetMax: 1000000,
+    reachRequired: 5000,
+  },
+  {
+    authorSlug: "pulse-sportswear",
+    direction: "offering_sponsorship",
+    title: "Fitness-Creator:in für Kollektions-Launch gesucht",
+    description: "Für den Launch von 'Pulse Move' suchen wir 2-3 authentische Fitness-Creator:innen für Reels, Story-Content und ein Launch-Video.",
+    categorySlug: "creator-fitness",
+    region: null,
+    budgetMin: 100000,
+    budgetMax: 800000,
+    reachRequired: 50000,
+  },
+  {
+    authorSlug: "greenfuel-energie-ag",
+    direction: "offering_sponsorship",
+    title: "Sportler:innen & Creator für Nachhaltigkeits-Kampagne",
+    description: "Gesucht: Gesichter für 'Energie, die zu dir passt' — Sport- oder Food-Content mit Fokus auf einen bewussten, nachhaltigen Alltag.",
+    categorySlug: null,
+    region: "bayern",
+    budgetMin: 500000,
+    budgetMax: 3000000,
+    reachRequired: 20000,
+  },
+  {
+    authorSlug: "jonas-keller",
+    direction: "seeking_sponsor",
+    title: "Fitness-Creator sucht langfristige Markenpartnerschaft",
+    description: "210K Follower über Instagram, TikTok & YouTube — suche 1-2 Marken für eine dauerhafte Zusammenarbeit statt Einzelposts, Schwerpunkt Kraftsport & Ernährung.",
+    categorySlug: "creator-fitness",
+    region: "berlin",
+    budgetMin: null,
+    budgetMax: null,
+    reachRequired: null,
+  },
+  {
+    authorSlug: "mara-vogt",
+    direction: "seeking_sponsor",
+    title: "Läuferin sucht Sponsor zur Halbmarathon-Saison",
+    description: "Landeskader Bayern, aktiv auf Instagram — suche Unterstützung durch einen Ausrüster oder Ernährungs-Partner für die kommende Renn-Saison.",
+    categorySlug: "laufen-leichtathletik",
+    region: "bayern",
+    budgetMin: null,
+    budgetMax: null,
+    reachRequired: null,
+  },
+  {
+    authorSlug: "tsv-lindenau-04",
+    direction: "seeking_sponsor",
+    title: "Fußballverein sucht Trikotsponsor für die Rückrunde",
+    description: "Traditionsverein mit starker Jugendabteilung — suchen einen Trikot- oder Bandenwerbung-Partner für die 1. Männermannschaft.",
+    categorySlug: "fussball",
+    region: "sachsen",
+    budgetMin: null,
+    budgetMax: null,
+    reachRequired: null,
+  },
+  {
+    authorSlug: "basketkids-frankfurt",
+    direction: "seeking_sponsor",
+    title: "Nachwuchsverein sucht Unterstützung für neue Ausrüstung",
+    description: "6 Jugendmannschaften, wachsender Verein — freuen uns über Sponsoring für Trikots, Bälle oder ein Trainingslager.",
+    categorySlug: "basketball",
+    region: "hessen",
+    budgetMin: null,
+    budgetMax: null,
+    reachRequired: null,
+  },
+  {
+    authorSlug: "elif-demir",
+    direction: "seeking_sponsor",
+    title: "Food-Creatorin offen für Marken-Kooperationen",
+    description: "89K Follower, Schwerpunkt regionale & saisonale Küche — offen für Rezeptvideos, Postings oder langfristige Zusammenarbeit mit Food- oder Küchenmarken.",
+    categorySlug: "creator-food",
+    region: "nordrhein_westfalen",
+    budgetMin: null,
+    budgetMax: null,
+    reachRequired: null,
+  },
+];
+
+/**
+ * Lädt die Autor:innen per Slug direkt aus der DB — unabhängig davon, ob sie
+ * in diesem Durchlauf neu angelegt wurden oder schon vorher existierten.
+ * Per Titel-Check auf dem ersten Listing selbst idempotent (nicht nur über
+ * seedDemoDataOnce abgesichert) — z. B. gegen doppelte Ausführung durch
+ * überlappende Dev-Server-Reloads.
+ */
+function seedListings(db: SqlDatabase, categoryIds: Map<string, string>): void {
+  const first = LISTINGS[0];
+  const firstAuthor = getProfileBySlug(db, first.authorSlug);
+  if (firstAuthor && selectOne(db, "select id from listings where author_profile_id = ? and title = ?", [firstAuthor.id, first.title])) {
+    return;
+  }
+  for (const l of LISTINGS) {
+    const author = getProfileBySlug(db, l.authorSlug)!;
+    createListing(db, {
+      authorProfileId: author.id,
+      direction: l.direction,
+      title: l.title,
+      description: l.description,
+      categoryId: l.categorySlug ? categoryIds.get(l.categorySlug)! : null,
+      region: l.region,
+      budgetMin: l.budgetMin,
+      budgetMax: l.budgetMax,
+      reachRequired: l.reachRequired,
+      status: "active",
+      expiresAt: null,
+    });
+  }
+}
+
 async function seedDemoData(db: SqlDatabase, categoryIds: Map<string, string>): Promise<void> {
   const sponsors = new Map<string, Profile>();
   for (const s of SPONSORS) {
@@ -354,132 +488,7 @@ async function seedDemoData(db: SqlDatabase, categoryIds: Map<string, string>): 
     sponsees.set(s.slug, profile);
   }
 
-  const LISTINGS: {
-    authorSlug: string;
-    authorRole: "sponsor" | "sponsee";
-    direction: "offering_sponsorship" | "seeking_sponsor";
-    title: string;
-    description: string;
-    categorySlug: string | null;
-    region: Region | null;
-    budgetMin: number | null;
-    budgetMax: number | null;
-    reachRequired: number | null;
-  }[] = [
-    {
-      authorSlug: "nordsport-trikot-gmbh",
-      authorRole: "sponsor",
-      direction: "offering_sponsorship",
-      title: "Trikotsponsoring für Amateurvereine gesucht",
-      description: "Wir stellen Trikots & Bandenwerbung für 1-2 Vereine im Fußball- oder Handballbereich in Norddeutschland — inkl. Logo-Platzierung und Social-Media-Erwähnung.",
-      categorySlug: "fussball",
-      region: "hamburg",
-      budgetMin: 200000,
-      budgetMax: 1000000,
-      reachRequired: 5000,
-    },
-    {
-      authorSlug: "pulse-sportswear",
-      authorRole: "sponsor",
-      direction: "offering_sponsorship",
-      title: "Fitness-Creator:in für Kollektions-Launch gesucht",
-      description: "Für den Launch von 'Pulse Move' suchen wir 2-3 authentische Fitness-Creator:innen für Reels, Story-Content und ein Launch-Video.",
-      categorySlug: "creator-fitness",
-      region: null,
-      budgetMin: 100000,
-      budgetMax: 800000,
-      reachRequired: 50000,
-    },
-    {
-      authorSlug: "greenfuel-energie-ag",
-      authorRole: "sponsor",
-      direction: "offering_sponsorship",
-      title: "Sportler:innen & Creator für Nachhaltigkeits-Kampagne",
-      description: "Gesucht: Gesichter für 'Energie, die zu dir passt' — Sport- oder Food-Content mit Fokus auf einen bewussten, nachhaltigen Alltag.",
-      categorySlug: null,
-      region: "bayern",
-      budgetMin: 500000,
-      budgetMax: 3000000,
-      reachRequired: 20000,
-    },
-    {
-      authorSlug: "jonas-keller",
-      authorRole: "sponsee",
-      direction: "seeking_sponsor",
-      title: "Fitness-Creator sucht langfristige Markenpartnerschaft",
-      description: "210K Follower über Instagram, TikTok & YouTube — suche 1-2 Marken für eine dauerhafte Zusammenarbeit statt Einzelposts, Schwerpunkt Kraftsport & Ernährung.",
-      categorySlug: "creator-fitness",
-      region: "berlin",
-      budgetMin: null,
-      budgetMax: null,
-      reachRequired: null,
-    },
-    {
-      authorSlug: "mara-vogt",
-      authorRole: "sponsee",
-      direction: "seeking_sponsor",
-      title: "Läuferin sucht Sponsor zur Halbmarathon-Saison",
-      description: "Landeskader Bayern, aktiv auf Instagram — suche Unterstützung durch einen Ausrüster oder Ernährungs-Partner für die kommende Renn-Saison.",
-      categorySlug: "laufen-leichtathletik",
-      region: "bayern",
-      budgetMin: null,
-      budgetMax: null,
-      reachRequired: null,
-    },
-    {
-      authorSlug: "tsv-lindenau-04",
-      authorRole: "sponsee",
-      direction: "seeking_sponsor",
-      title: "Fußballverein sucht Trikotsponsor für die Rückrunde",
-      description: "Traditionsverein mit starker Jugendabteilung — suchen einen Trikot- oder Bandenwerbung-Partner für die 1. Männermannschaft.",
-      categorySlug: "fussball",
-      region: "sachsen",
-      budgetMin: null,
-      budgetMax: null,
-      reachRequired: null,
-    },
-    {
-      authorSlug: "basketkids-frankfurt",
-      authorRole: "sponsee",
-      direction: "seeking_sponsor",
-      title: "Nachwuchsverein sucht Unterstützung für neue Ausrüstung",
-      description: "6 Jugendmannschaften, wachsender Verein — freuen uns über Sponsoring für Trikots, Bälle oder ein Trainingslager.",
-      categorySlug: "basketball",
-      region: "hessen",
-      budgetMin: null,
-      budgetMax: null,
-      reachRequired: null,
-    },
-    {
-      authorSlug: "elif-demir",
-      authorRole: "sponsee",
-      direction: "seeking_sponsor",
-      title: "Food-Creatorin offen für Marken-Kooperationen",
-      description: "89K Follower, Schwerpunkt regionale & saisonale Küche — offen für Rezeptvideos, Postings oder langfristige Zusammenarbeit mit Food- oder Küchenmarken.",
-      categorySlug: "creator-food",
-      region: "nordrhein_westfalen",
-      budgetMin: null,
-      budgetMax: null,
-      reachRequired: null,
-    },
-  ];
-
-  for (const l of LISTINGS) {
-    const author = l.authorRole === "sponsor" ? sponsors.get(l.authorSlug)! : sponsees.get(l.authorSlug)!;
-    createListing(db, {
-      authorProfileId: author.id,
-      direction: l.direction,
-      title: l.title,
-      description: l.description,
-      categoryId: l.categorySlug ? categoryIds.get(l.categorySlug)! : null,
-      region: l.region,
-      budgetMin: l.budgetMin,
-      budgetMax: l.budgetMax,
-      reachRequired: l.reachRequired,
-      status: "active",
-      expiresAt: null,
-    });
-  }
+  seedListings(db, categoryIds);
 
   function conversationBetween(sponsorSlug: string, sponseeSlug: string): { sponsor: Profile; sponsee: Profile; conversationId: string } {
     const sponsor = sponsors.get(sponsorSlug)!;
@@ -599,27 +608,54 @@ async function seedDemoData(db: SqlDatabase, categoryIds: Map<string, string>): 
 }
 
 /**
- * Legt den Demo-Datensatz an, aber nur einmal (Marker in platform_settings) —
- * so lässt sich das auch nachträglich auf einer bereits bestehenden lokalen
- * DB nachholen (siehe ensureDemoData), z. B. wenn jemand die Seite schon vor
- * Einführung der Demo-Daten besucht und dadurch eine "leere" IndexedDB hat.
+ * Versionsnummer des Demo-Datensatzes — bei jeder inhaltlichen Erweiterung
+ * (neue Profile, Listings, …) hochzählen. So lässt sich beim Laden einer
+ * bestehenden lokalen DB gezielt nachholen, was seit ihrem Stand neu
+ * hinzugekommen ist, statt alles pauschal neu (oder gar nicht) zu seeden.
+ *  1 = Profile, Chats, Deals · 2 = + Listings
+ */
+const DEMO_SEED_VERSION = 2;
+
+function getSeedVersion(db: SqlDatabase): number {
+  const versionRow = selectOne<{ value: string }>(db, "select value from platform_settings where key = 'demo_seed_version'");
+  if (versionRow) return JSON.parse(versionRow.value) as number;
+  // Älterer Boolean-Marker aus einem Zwischenstand (Profile/Chats/Deals ohne Listings).
+  if (selectOne(db, "select value from platform_settings where key = 'demo_seeded'")) return 1;
+  return 0;
+}
+
+function setSeedVersion(db: SqlDatabase, version: number): void {
+  if (selectOne(db, "select value from platform_settings where key = 'demo_seed_version'")) {
+    db.run("update platform_settings set value = ? where key = 'demo_seed_version'", [JSON.stringify(version)]);
+  } else {
+    db.run("insert into platform_settings (key, value) values ('demo_seed_version', ?)", [JSON.stringify(version)]);
+  }
+}
+
+/**
+ * Holt fehlende Demo-Inhalte nach, ausgehend vom gespeicherten Versionsstand
+ * — so lässt sich das auch nachträglich auf einer bereits bestehenden
+ * lokalen DB nachholen (siehe ensureDemoData), z. B. wenn jemand die Seite
+ * vor Einführung der Demo-Daten oder vor Einführung der Listings besucht hat.
  */
 async function seedDemoDataOnce(db: SqlDatabase): Promise<boolean> {
-  if (selectOne(db, "select value from platform_settings where key = 'demo_seeded'")) {
-    return false;
-  }
-  // Marker fehlt — kann heißen "DB stammt von vor dem Demo-Datensatz" (dann
-  // fehlen die Profile wirklich) ODER "DB stammt von vor Einführung des
-  // Markers, hat den Datensatz aber schon" (z. B. erster Deploy-Stand ohne
-  // Marker). Per E-Mail-Check unterscheiden, sonst gäb's einen
-  // Unique-Constraint-Fehler beim erneuten Anlegen bereits vorhandener Demo-Profile.
+  const version = getSeedVersion(db);
+  if (version >= DEMO_SEED_VERSION) return false;
+
+  // Per E-Mail-Check statt Blind-Insert, sonst gäb's einen Unique-Constraint-
+  // Fehler beim erneuten Anlegen bereits vorhandener Demo-Profile.
   const demoAlreadyPresent = selectOne(db, "select id from profiles where email = ?", [SPONSORS[0].email]);
   if (!demoAlreadyPresent) {
     const rows = select<{ id: string; slug: string }>(db, "select id, slug from categories");
     const categoryIds = new Map(rows.map((r) => [r.slug, r.id]));
-    await seedDemoData(db, categoryIds);
+    await seedDemoData(db, categoryIds); // legt Profile, Chats, Deals UND Listings an
+  } else if (version < 2) {
+    const rows = select<{ id: string; slug: string }>(db, "select id, slug from categories");
+    const categoryIds = new Map(rows.map((r) => [r.slug, r.id]));
+    seedListings(db, categoryIds);
   }
-  db.run("insert into platform_settings (key, value) values ('demo_seeded', ?)", [JSON.stringify(true)]);
+
+  setSeedVersion(db, DEMO_SEED_VERSION);
   return true;
 }
 
@@ -634,7 +670,7 @@ export async function seedDatabase(db: SqlDatabase): Promise<void> {
   db.run("insert into platform_settings (key, value) values ('commission_pct', ?)", [JSON.stringify(10)]);
 
   await seedDemoData(db, categoryIds);
-  db.run("insert into platform_settings (key, value) values ('demo_seeded', ?)", [JSON.stringify(true)]);
+  setSeedVersion(db, DEMO_SEED_VERSION);
 }
 
 /**

@@ -1,5 +1,5 @@
 import type { SqlDatabase } from "./client";
-import { selectOne } from "./query";
+import { select, selectOne } from "./query";
 import { hashPassword } from "@/auth/password";
 import { completeSponsorOnboarding, completeSponseeOnboarding } from "./repositories/profiles";
 import { startConversation, sendMessage, markConversationRead } from "./repositories/conversations";
@@ -470,6 +470,32 @@ async function seedDemoData(db: SqlDatabase, categoryIds: Map<string, string>): 
   }
 }
 
+/**
+ * Legt den Demo-Datensatz an, aber nur einmal (Marker in platform_settings) —
+ * so lässt sich das auch nachträglich auf einer bereits bestehenden lokalen
+ * DB nachholen (siehe ensureDemoData), z. B. wenn jemand die Seite schon vor
+ * Einführung der Demo-Daten besucht und dadurch eine "leere" IndexedDB hat.
+ */
+async function seedDemoDataOnce(db: SqlDatabase): Promise<boolean> {
+  if (selectOne(db, "select value from platform_settings where key = 'demo_seeded'")) {
+    return false;
+  }
+  // Marker fehlt — kann heißen "DB stammt von vor dem Demo-Datensatz" (dann
+  // fehlen die Profile wirklich) ODER "DB stammt von vor Einführung des
+  // Markers, hat den Datensatz aber schon" (z. B. erster Deploy-Stand ohne
+  // Marker). Per E-Mail-Check unterscheiden, sonst gäb's einen
+  // Unique-Constraint-Fehler beim erneuten Anlegen bereits vorhandener Demo-Profile.
+  const demoAlreadyPresent = selectOne(db, "select id from profiles where email = ?", [SPONSORS[0].email]);
+  if (!demoAlreadyPresent) {
+    const rows = select<{ id: string; slug: string }>(db, "select id, slug from categories");
+    const categoryIds = new Map(rows.map((r) => [r.slug, r.id]));
+    await seedDemoData(db, categoryIds);
+  }
+  db.run("insert into platform_settings (key, value) values ('demo_seeded', ?)", [JSON.stringify(true)]);
+  return true;
+}
+
+/** Erstinitialisierung einer komplett leeren DB (Taxonomie + Provisionssatz + Demo-Datensatz). */
 export async function seedDatabase(db: SqlDatabase): Promise<void> {
   const categoryIds = new Map<string, string>();
   for (const c of CATEGORIES) {
@@ -480,4 +506,15 @@ export async function seedDatabase(db: SqlDatabase): Promise<void> {
   db.run("insert into platform_settings (key, value) values ('commission_pct', ?)", [JSON.stringify(10)]);
 
   await seedDemoData(db, categoryIds);
+  db.run("insert into platform_settings (key, value) values ('demo_seeded', ?)", [JSON.stringify(true)]);
+}
+
+/**
+ * Nachträgliche Migration für bereits bestehende lokale Datenbanken (z. B.
+ * von vor Einführung der Demo-Daten) — beim nächsten Laden aufgerufen, holt
+ * den Demo-Datensatz nach, ohne die vorhandene DB zurückzusetzen. Gibt true
+ * zurück, wenn etwas geändert wurde (dann muss neu persistiert werden).
+ */
+export async function ensureDemoData(db: SqlDatabase): Promise<boolean> {
+  return seedDemoDataOnce(db);
 }

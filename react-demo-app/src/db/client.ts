@@ -1,6 +1,6 @@
 import initSqlJs from "sql.js";
 import schemaSql from "./schema.sql?raw";
-import { seedDatabase } from "./seed";
+import { seedDatabase, ensureDemoData } from "./seed";
 import { loadSnapshot, saveSnapshot, clearSnapshot } from "./idb";
 
 /**
@@ -31,7 +31,12 @@ async function initialize(): Promise<SqlDatabase> {
 
   const snapshot = await loadSnapshot();
   if (snapshot) {
-    return new SQL.Database(snapshot);
+    const db = new SQL.Database(snapshot);
+    // Nachträgliche Migration: DB stammt evtl. von vor Einführung der
+    // Demo-Daten (leeres /entdecken) — beim nächsten Laden automatisch nachholen.
+    const migrated = await ensureDemoData(db);
+    if (migrated) await saveSnapshot(db.export());
+    return db;
   }
 
   const db = new SQL.Database();

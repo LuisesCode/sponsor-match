@@ -4,6 +4,7 @@ import { hashPassword } from "@/auth/password";
 import { completeSponsorOnboarding, completeSponseeOnboarding } from "./repositories/profiles";
 import { startConversation, sendMessage, markConversationRead } from "./repositories/conversations";
 import { createDeal, counterDealOffer, advanceDealStatus, acceptContract } from "./repositories/deals";
+import { createListing } from "./repositories/listings";
 import type { CompanySize, DealMilestoneInput, Profile, ProfileRole, Region, SponseeType } from "@/lib/types";
 
 /**
@@ -351,6 +352,133 @@ async function seedDemoData(db: SqlDatabase, categoryIds: Map<string, string>): 
       priceMax: s.priceMax,
     });
     sponsees.set(s.slug, profile);
+  }
+
+  const LISTINGS: {
+    authorSlug: string;
+    authorRole: "sponsor" | "sponsee";
+    direction: "offering_sponsorship" | "seeking_sponsor";
+    title: string;
+    description: string;
+    categorySlug: string | null;
+    region: Region | null;
+    budgetMin: number | null;
+    budgetMax: number | null;
+    reachRequired: number | null;
+  }[] = [
+    {
+      authorSlug: "nordsport-trikot-gmbh",
+      authorRole: "sponsor",
+      direction: "offering_sponsorship",
+      title: "Trikotsponsoring für Amateurvereine gesucht",
+      description: "Wir stellen Trikots & Bandenwerbung für 1-2 Vereine im Fußball- oder Handballbereich in Norddeutschland — inkl. Logo-Platzierung und Social-Media-Erwähnung.",
+      categorySlug: "fussball",
+      region: "hamburg",
+      budgetMin: 200000,
+      budgetMax: 1000000,
+      reachRequired: 5000,
+    },
+    {
+      authorSlug: "pulse-sportswear",
+      authorRole: "sponsor",
+      direction: "offering_sponsorship",
+      title: "Fitness-Creator:in für Kollektions-Launch gesucht",
+      description: "Für den Launch von 'Pulse Move' suchen wir 2-3 authentische Fitness-Creator:innen für Reels, Story-Content und ein Launch-Video.",
+      categorySlug: "creator-fitness",
+      region: null,
+      budgetMin: 100000,
+      budgetMax: 800000,
+      reachRequired: 50000,
+    },
+    {
+      authorSlug: "greenfuel-energie-ag",
+      authorRole: "sponsor",
+      direction: "offering_sponsorship",
+      title: "Sportler:innen & Creator für Nachhaltigkeits-Kampagne",
+      description: "Gesucht: Gesichter für 'Energie, die zu dir passt' — Sport- oder Food-Content mit Fokus auf einen bewussten, nachhaltigen Alltag.",
+      categorySlug: null,
+      region: "bayern",
+      budgetMin: 500000,
+      budgetMax: 3000000,
+      reachRequired: 20000,
+    },
+    {
+      authorSlug: "jonas-keller",
+      authorRole: "sponsee",
+      direction: "seeking_sponsor",
+      title: "Fitness-Creator sucht langfristige Markenpartnerschaft",
+      description: "210K Follower über Instagram, TikTok & YouTube — suche 1-2 Marken für eine dauerhafte Zusammenarbeit statt Einzelposts, Schwerpunkt Kraftsport & Ernährung.",
+      categorySlug: "creator-fitness",
+      region: "berlin",
+      budgetMin: null,
+      budgetMax: null,
+      reachRequired: null,
+    },
+    {
+      authorSlug: "mara-vogt",
+      authorRole: "sponsee",
+      direction: "seeking_sponsor",
+      title: "Läuferin sucht Sponsor zur Halbmarathon-Saison",
+      description: "Landeskader Bayern, aktiv auf Instagram — suche Unterstützung durch einen Ausrüster oder Ernährungs-Partner für die kommende Renn-Saison.",
+      categorySlug: "laufen-leichtathletik",
+      region: "bayern",
+      budgetMin: null,
+      budgetMax: null,
+      reachRequired: null,
+    },
+    {
+      authorSlug: "tsv-lindenau-04",
+      authorRole: "sponsee",
+      direction: "seeking_sponsor",
+      title: "Fußballverein sucht Trikotsponsor für die Rückrunde",
+      description: "Traditionsverein mit starker Jugendabteilung — suchen einen Trikot- oder Bandenwerbung-Partner für die 1. Männermannschaft.",
+      categorySlug: "fussball",
+      region: "sachsen",
+      budgetMin: null,
+      budgetMax: null,
+      reachRequired: null,
+    },
+    {
+      authorSlug: "basketkids-frankfurt",
+      authorRole: "sponsee",
+      direction: "seeking_sponsor",
+      title: "Nachwuchsverein sucht Unterstützung für neue Ausrüstung",
+      description: "6 Jugendmannschaften, wachsender Verein — freuen uns über Sponsoring für Trikots, Bälle oder ein Trainingslager.",
+      categorySlug: "basketball",
+      region: "hessen",
+      budgetMin: null,
+      budgetMax: null,
+      reachRequired: null,
+    },
+    {
+      authorSlug: "elif-demir",
+      authorRole: "sponsee",
+      direction: "seeking_sponsor",
+      title: "Food-Creatorin offen für Marken-Kooperationen",
+      description: "89K Follower, Schwerpunkt regionale & saisonale Küche — offen für Rezeptvideos, Postings oder langfristige Zusammenarbeit mit Food- oder Küchenmarken.",
+      categorySlug: "creator-food",
+      region: "nordrhein_westfalen",
+      budgetMin: null,
+      budgetMax: null,
+      reachRequired: null,
+    },
+  ];
+
+  for (const l of LISTINGS) {
+    const author = l.authorRole === "sponsor" ? sponsors.get(l.authorSlug)! : sponsees.get(l.authorSlug)!;
+    createListing(db, {
+      authorProfileId: author.id,
+      direction: l.direction,
+      title: l.title,
+      description: l.description,
+      categoryId: l.categorySlug ? categoryIds.get(l.categorySlug)! : null,
+      region: l.region,
+      budgetMin: l.budgetMin,
+      budgetMax: l.budgetMax,
+      reachRequired: l.reachRequired,
+      status: "active",
+      expiresAt: null,
+    });
   }
 
   function conversationBetween(sponsorSlug: string, sponseeSlug: string): { sponsor: Profile; sponsee: Profile; conversationId: string } {

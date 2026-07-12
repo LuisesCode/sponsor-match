@@ -20,7 +20,6 @@ const NAV_LINKS: [string, string][] = [
   ["/listings", "Listings"],
   ["/nachrichten", "Nachrichten"],
   ["/deals", "Deals"],
-  ["/profil/bearbeiten", "Mein Profil"],
 ];
 
 /** Layout des eingeloggten Bereichs — Struktur 1:1 aus app/(app)/layout.tsx. */
@@ -75,6 +74,12 @@ export function AppShell() {
                 )}
               </Link>
             ))}
+            <Link
+              to={`/profil/${profile.slug}`}
+              style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)", fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-muted)", textDecoration: "none" }}
+            >
+              Mein Profil
+            </Link>
           </nav>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
             <NotificationBell />
